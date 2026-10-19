@@ -1,0 +1,10 @@
+numpy
+pandas
+matplotlib
+rasterio
+torch
+torchgeo
+jupyter
+scikit-learn
+h5py
+gsutil

@@ -3,13 +3,16 @@
 ## Sen1Floods11
 
 * Lien : https://github.com/cloudtostreet/Sen1Floods11
-* Licence : non indiquée dans le README du dépôt. **À confirmer** (fichier LICENSE du dépôt, ou contact des auteurs) avant le rendu.
+* Licence : **non précisée** pour les données (ni dans le README, ni dans le bucket). Usage limité à la recherche et à l'enseignement, avec citation de l'article. À mentionner comme limite dans le rendu ; contacter les auteurs (Cloud to Street) si une confirmation écrite est nécessaire.
 * Article à citer : Bonafilia, D., Tellman, B., Anderson, T., & Issenberg, E. (2020). *Sen1Floods11: a georeferenced dataset to train and test deep learning flood algorithms for Sentinel-1.* IEEE/CVF Conference on Computer Vision and Pattern Recognition Workshops (CVPRW), pp. 210-211.
 * Capteurs et bandes : Sentinel-1 SAR (2 bandes : VV, VH, en dB) et Sentinel-2 MSI (13 bandes : B1 à B12, dont B8A).
 * Niveau de traitement S2 : L1C (réflectance au sommet de l'atmosphère, *Top-Of-Atmosphere*), confirmé par le README.
 * Taille et résolution des tuiles : 512 × 512 pixels, environ 10 m par pixel.
 * Valeurs du masque : -1 (pas de donnée / non valide), 0 (pas d'eau), 1 (eau).
-* Nombre d'événements / pays : 11 événements d'inondation, nommés par pays dans les noms de fichiers. Liste exacte à extraire de `Sen1Floods11_Metadata.geojson`.
+* Nombre d'événements / pays : 11 événements dans HandLabeled (le geojson en liste 12 ; la Colombie n'a pas de tuile annotée à la main). Tuiles et dates S1 / S2 :
+  USA 69 (22/05/2019), Inde 68 (12/08/2016), Paraguay 67 (31/10/2018), Ghana 53 (18-19/09/2018), Sri Lanka 42 (28-30/05/2017),
+  Mékong / Cambodge 30 (04-05/08/2018), Espagne 30 (17-18/09/2019), Pakistan 28 (28/06/2017), Somalie 26 (05-07/05/2018),
+  Nigeria 18 (20-21/09/2018), Bolivie 15 (15/02/2018). Total 446. Images S1 et S2 acquises à 0-2 jours d'écart.
 * Nombre de tuiles annotées à la main : 446 (sous-ensemble HandLabeled), réparties en train / val / test officiels, plus un test séparé sur la Bolivie (`flood_bolivia_data.csv`). Le reste du jeu (environ 4 385 tuiles) est en étiquetage faible (WeaklyLabeled).
 * Comment télécharger : bucket Google Cloud public, avec `gsutil` (installé via pip) :
   `gsutil -m cp -r gs://sen1floods11/v1.1/data/flood_events/HandLabeled/<S1Hand|S2Hand|LabelHand|JRCWaterHand> data/sen1floods11/`
@@ -30,6 +33,10 @@
 * Les NaN de S1 doivent être traités dans le prétraitement (remplacement et masque des pixels invalides).
 * Les pixels -1 du masque doivent être ignorés dans le calcul de la perte (`ignore_index = -1`).
 * Toutes les tuiles proviennent de périodes d'inondation : il faudra ajouter de vraies scènes hors crue.
+* Déséquilibre géographique : 69 tuiles pour les USA contre 15 pour la Bolivie.
+* Le découpage officiel train / valid / test mélange les mêmes pays (tirage aléatoire par tuile) : risque de fuite géographique. Seule la Bolivie est réellement tenue à l'écart.
+* L'eau permanente (JRC, dérivée de Landsat à 30 m) manque les rivières étroites et les petites mares : la règle « crue = masque − JRC » les compte à tort comme crue (ex. Paraguay_1056717).
+* Les annotations ont été tracées à partir de S2 : sous les nuages, le masque vaut -1 même quand le radar voit l'eau.
 
 ## CaBuAr
 

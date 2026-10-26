@@ -9,3 +9,4 @@ scikit-learn
 h5py
 gsutil
 scipy
+openeo

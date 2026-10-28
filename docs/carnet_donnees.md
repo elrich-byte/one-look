@@ -8,8 +8,8 @@ Ce carnet décrit les données du projet One Look : provenance, licences, compos
 |---|---|---|---|---|
 | **Sen1Floods11 HandLabeled** | 446 tuiles S1 + S2 L1C + masque d'eau annoté à la main, 11 inondations (2016-2019) | crues (ALERTE) et tuiles peu touchées (NORMAL) | non précisée par les auteurs ; citation obligatoire de Bonafilia et al., 2020 | téléchargé |
 | **JRC Global Surface Water** (inclus dans Sen1Floods11) | eau permanente | séparer l'eau de crue de l'eau normale | Copernicus, gratuit et sans restriction d'usage ; citer Pekel et al., *Nature*, 2016 ; mention « Source: EC JRC/Google » sur les cartes | téléchargé |
-| **Sen1Floods11 perm_water** | 814 tuiles d'eau permanente dans le monde, hors crue | NORMAL, négatifs difficiles « eau normale » | comme Sen1Floods11 | script prêt (`scripts/telecharger_perm_water.bat`) |
-| **Copernicus Sentinel-1 GRD et Sentinel-2 L1C** via Copernicus Data Space Ecosystem (openEO) | 61 scènes NORMAL (39 hors crue sur les lieux des crues, 22 négatifs difficiles) et 7 scènes inconnues | NORMAL, négatifs difficiles, INCONNU | licence des données Sentinel Copernicus : gratuite, complète et ouverte ; mention « Contains modified Copernicus Sentinel data [année] » | script prêt (`src/scenes_openeo.py`) |
+| **Sen1Floods11 perm_water** | 814 tuiles d'eau permanente dans le monde, hors crue, **radar seul** | évaluation des fausses alertes en mode radar seul (pas d'entraînement) | comme Sen1Floods11 | téléchargé et converti (`src/convertir_perm_water.py`) |
+| **Copernicus Sentinel-1 GRD et Sentinel-2 L1C** via Copernicus Data Space Ecosystem (openEO) | 61 scènes NORMAL prévues (39 hors crue sur les lieux des crues, 22 négatifs difficiles) et 7 scènes inconnues | NORMAL, négatifs difficiles, INCONNU | licence des données Sentinel Copernicus : gratuite, complète et ouverte ; mention « Contains modified Copernicus Sentinel data [année] » | 62 / 68 téléchargées (`src/scenes_openeo.py`) |
 | **CaBuAr** | zones brûlées en Californie, Sentinel-2 seul | INCONNU (phénomène jamais vu) | CDLA-Permissive-2.0 ; citer Rege Cambrin et al., 2023 | script prêt (`src/exporter_cabuar.py`) |
 | **Entrées synthétiques** | 7 types d'entrées corrompues ou absurdes, générées à partir de tuiles de test | INCONNU | produites par le projet | `src/inconnu.py` |
 
@@ -66,18 +66,23 @@ Chaque ensemble de test a un « voisin » dans l'entraînement (Bolivie / Paragu
 
 Tuiles utilisables pour l'apprentissage et l'évaluation (ALERTE + NORMAL) : 216 train, 43 val, 65 test.
 
-### Composition visée après téléchargements
+### Composition au 26/10/2026 (`data/index.csv`)
 
-| Ajout | NORMAL | INCONNU |
-|---|---|---|
-| perm_water | 814 | |
-| Scènes hors crue, mêmes lieux | 39 | |
-| Négatifs difficiles (neige, relief, désert, aéroports, villes, rizières, champs labourés, lacs, zone humide, nuages) | 22 | |
-| Scènes inconnues (lave, incendies, banquise, glacier, mine, salar) | | 7 |
-| CaBuAr | | 15 |
-| Synthétiques | | 7 types × n tuiles de test |
+| Ensemble | ALERTE | NORMAL | INCONNU | Rôle |
+|---|---|---|---|---|
+| train | 114 | 141 (102 Sen1Floods11 + 39 Copernicus) | | apprentissage |
+| val | 29 | 21 (14 + 7) | | réglage |
+| test | 35 | 41 (30 + 11) | | évaluation finale |
+| eval_eau_permanente | | 814 (perm_water, radar seul) | | fausses alertes sur eau normale |
+| inconnu | | | 5 scènes Copernicus | détection de l'inconnu |
 
-Après ajout, les NORMAL seront nettement plus nombreux que les ALERTE : le déséquilibre sera compensé par des poids de classe (`TuilesDataset.poids_classes()`) et le seuil réglé sur la validation.
+S'y ajoutent les 7 types d'entrées synthétiques (`src/inconnu.py`), et CaBuAr en option. Il manque 6 scènes Copernicus (4 en Inde, banquise du Groenland, glacier d'Islande) et le S2 du salar d'Uyuni : le script les retente à chaque relance.
+
+### Constats sur les données ajoutées
+
+- **perm_water n'est pas au format annoncé** : le radar est ramené entre 0 et 1 par une transformation non documentée, il n'y a pas de Sentinel-2, et les tuiles ne font pas 512 × 512. Une conversion en dB a été estimée en calant les médianes « terre » et « eau permanente » sur Sen1Floods11 (VV ≈ 57,9·x − 55,0 ; VH ≈ 45,5·x − 46,4), avec une précision de 2 à 3 dB. Trop imprécis pour l'entraînement : ces tuiles servent seulement à mesurer les fausses alertes en mode radar seul.
+- **Écart radar entre sources** : sur les tuiles normales, la médiane VV vaut −10,0 dB pour Sen1Floods11 (Google Earth Engine) et −11,5 dB pour les scènes Copernicus (openEO, sigma0 ellipsoïde). Écart de 1,5 dB, en partie dû aux paysages différents. À surveiller : si le modèle sépare les sources au lieu des classes, c'est un biais.
+- **Pixels optiques négatifs isolés** (moins de 0,003 % d'une tuile) dans 5 scènes Copernicus : artefacts du serveur, ramenés à 0 par la normalisation. Le contrôle de format tolère jusqu'à 1 % de valeurs hors plage.
 
 ## 5. Prétraitement
 
@@ -85,7 +90,7 @@ Module unique `src/donnees.py`, utilisé tel quel par l'entraînement, l'évalua
 
 1. **Contrôles de format** (`verifier`) : nombre de bandes, taille, S1 bien en dB, S2 dans la plage de réflectance. En cas d'échec : décision INCONNU, sans passer par le modèle.
 2. **Disponibilité des capteurs** : un capteur est lisible si au moins 20 % de ses pixels sont valides. Si aucun ne l'est : INCONNU.
-3. **Normalisation** : S1 écrêté à [-50, 5] dB ; S2 divisé par 10 000 et écrêté à [0, 2] ; puis standardisation par canal avec moyenne et écart-type calculés **sur l'ensemble train uniquement** (`data/normalisation.json`, 303 tuiles).
+3. **Normalisation** : S1 écrêté à [-50, 5] dB ; S2 divisé par 10 000 et écrêté à [0, 2] ; puis standardisation par canal avec moyenne et écart-type calculés **sur l'ensemble train uniquement** (`data/normalisation.json`, 303 tuiles Sen1Floods11 + 39 scènes Copernicus).
 4. **Valeurs manquantes** : pixels NaN ou vides et capteur absent remplacés par 0 (la moyenne après standardisation).
 5. Sortie : tableau de **15 canaux** (VV, VH, B1…B12) de 512 × 512, et un indicateur de disponibilité (S1, S2).
 
@@ -113,6 +118,7 @@ python src/decoupage.py                 # classes et découpage par pays
 scripts\telecharger_perm_water.bat      # eau permanente (gsutil)
 python src/scenes_openeo.py             # scènes Copernicus (compte gratuit, openeo)
 python src/exporter_cabuar.py --n 15    # zones brûlées inconnues (datasets, hdf5plugin)
+python src/convertir_perm_water.py      # perm_water en dB, 512 x 512 (évaluation seule)
 python src/construire_index.py          # index unique -> data/index.csv
 python src/donnees.py --stats           # normalisation (train uniquement)
 python src/donnees.py --verifier        # contrôle de toutes les tuiles

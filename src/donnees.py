@@ -58,7 +58,9 @@ def verifier(s1, s2):
             raise EntreeInvalide(f"S1 : médiane {np.median(v):.2f}, valeurs pas en dB")
     if s2 is not None:
         v = s2[np.isfinite(s2)]
-        if v.size and (v.max() > 30000 or v.min() < 0):
+        # Quelques pixels négatifs isolés existent (artefacts de rééchantillonnage) :
+        # on ne rejette que si plus de 1 % des valeurs sont hors plage.
+        if v.size and ((v > 30000) | (v < 0)).mean() > 0.01:
             raise EntreeInvalide("S2 : valeurs hors de la plage de réflectance x 10 000")
 
 

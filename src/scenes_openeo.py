@@ -38,7 +38,7 @@ BANDES_S2 = ["B01", "B02", "B03", "B04", "B05", "B06", "B07", "B08", "B8A", "B09
 # Fenêtres hors crue (saison sèche ou basses eaux) par événement Sen1Floods11.
 SAISON_SECHE = {
     "USA": ("2020-09-01", "2020-10-31"),       # Missouri, basses eaux d'automne
-    "India": ("2017-01-15", "2017-03-15"),     # Assam, saison sèche
+    "India": ("2016-12-01", "2017-04-15"),     # Assam, saison sèche (fenêtre large : brumes d hiver)
     "Paraguay": ("2020-08-01", "2020-10-15"),  # fleuve Paraguay, étiage record 2020
     "Ghana": ("2019-01-05", "2019-02-28"),     # Volta Blanche, harmattan
     "Nigeria": ("2019-01-05", "2019-02-28"),   # Bénoué, saison sèche
@@ -85,7 +85,7 @@ INCONNUS = [
     ("inc_banquise_groenland", "glace_mer", -51.0, 69.2, "2021-03-15", "2021-04-30", 20),
     ("inc_glacier_islande", "glacier", -16.7, 64.4, "2021-07-01", "2021-08-31", 30),
     ("inc_mine_atacama", "mine_ciel_ouvert", -68.9, -24.27, "2020-10-01", "2020-11-30", 10),
-    ("inc_salar_uyuni", "salar", -67.5, -20.2, "2020-08-01", "2020-09-30", 10),
+    ("inc_salar_uyuni", "salar", -67.5, -20.2, "2020-05-01", "2020-11-30", 40),
 ]
 
 
@@ -100,7 +100,8 @@ def sites_saison_seche():
                  .nlargest(NB_PAR_PAYS[pays], "crue_robuste_pct"))
         for _, r in choix.iterrows():
             sites.append(dict(id=f"sec_{r['tile']}", categorie="hors_crue_meme_lieu", pays=pays,
-                              lon=r["lon"], lat=r["lat"], debut=debut, fin=fin, nuages_max=20,
+                              lon=r["lon"], lat=r["lat"], debut=debut, fin=fin,
+                              nuages_max=40 if pays == "India" else 20,
                               classe="NORMAL", groupe="pays"))
     return sites
 
@@ -145,24 +146,64 @@ def ajuster(chemin_brut, chemin_final, en_db):
     Path(chemin_brut).unlink()
 
 
+TENTATIVES = 3
+DELAI_MAX = 600   # secondes par requête ; au-delà, on abandonne et on réessaie
+
+
+def recuperer(connexion, cube, chemin):
+    """Télécharge un cube avec une limite de temps et plusieurs tentatives."""
+    import time
+    for essai in range(1, TENTATIVES + 1):
+        try:
+            connexion.download(cube.save_result(format="GTiff"), str(chemin), timeout=DELAI_MAX)
+            return
+        except Exception as e:
+            if Path(chemin).exists():
+                Path(chemin).unlink()
+            definitive = any(m in str(e) for m in ("No tiff for band", "NoDataAvailable", "FileNotFoundError"))
+            if essai == TENTATIVES or definitive:
+                raise
+            print(f"   tentative {essai} ratée ({str(e)[:80]}), nouvel essai dans 30 s", flush=True)
+            time.sleep(30)
+
+
+def cube_s1(connexion, bbox, debut, fin, lat):
+    s1 = connexion.load_collection("SENTINEL1_GRD", spatial_extent=bbox,
+                                   temporal_extent=[debut, fin], bands=["VV", "VH"])
+    # Au-delà de 60° N, le relief SRTM n'existe pas : on prend le relief Copernicus.
+    options = {"elevation_model": "COPERNICUS_30"} if abs(lat) > 59 else {}
+    s1 = s1.sar_backscatter(coefficient="sigma0-ellipsoid", **options)
+    s1 = s1.reduce_dimension(dimension="t", reducer="first")
+    return s1.resample_spatial(resolution=RES, projection=4326, method="near")
+
+
 def telecharger(connexion, site):
     import datetime as dt
-    fin_s1 = (dt.date.fromisoformat(site["debut"]) + dt.timedelta(days=12)).isoformat()
     bbox = emprise(site["lon"], site["lat"])
     s1_final = SORTIE / f"{site['id']}_S1.tif"
     s2_final = SORTIE / f"{site['id']}_S2.tif"
 
     if not s1_final.exists():
-        # 12 jours = un cycle de répétition : une seule acquisition, pas de moyenne
-        # (une moyenne lisserait le chatoiement et créerait un biais).
-        s1 = connexion.load_collection("SENTINEL1_GRD", spatial_extent=bbox,
-                                       temporal_extent=[site["debut"], fin_s1], bands=["VV", "VH"])
-        s1 = s1.sar_backscatter(coefficient="sigma0-ellipsoid")
-        s1 = s1.reduce_dimension(dimension="t", reducer="first")
-        s1 = s1.resample_spatial(resolution=RES, projection=4326, method="near")
-        brut = SORTIE / f"{site['id']}_S1_brut.tif"
-        s1.download(str(brut), format="GTiff")
-        ajuster(brut, s1_final, en_db=True)
+        # Fenêtres successives de 12 jours (un cycle de répétition : une seule acquisition,
+        # pas de moyenne qui lisserait le chatoiement). Si une fenêtre échoue (pas de VH,
+        # pas d'image), on passe à la suivante, jusqu'à la fin de la période.
+        debut = dt.date.fromisoformat(site["debut"])
+        limite = dt.date.fromisoformat(site["fin"])
+        derniere_erreur = None
+        while debut < limite:
+            fin = min(debut + dt.timedelta(days=12), limite)
+            brut = SORTIE / f"{site['id']}_S1_brut.tif"
+            try:
+                recuperer(connexion, cube_s1(connexion, bbox, debut.isoformat(), fin.isoformat(),
+                                             site["lat"]), brut)
+                ajuster(brut, s1_final, en_db=True)
+                break
+            except Exception as e:
+                derniere_erreur = e
+                print(f"   S1 {debut} -> {fin} indisponible ({str(e)[:70]}), fenêtre suivante", flush=True)
+                debut = fin
+        else:
+            raise RuntimeError(f"aucune acquisition S1 exploitable : {derniere_erreur}")
 
     if not s2_final.exists():
         s2 = connexion.load_collection("SENTINEL2_L1C", spatial_extent=bbox,
@@ -171,7 +212,7 @@ def telecharger(connexion, site):
         s2 = s2.reduce_dimension(dimension="t", reducer="first")
         s2 = s2.resample_spatial(resolution=RES, projection=4326, method="near")
         brut = SORTIE / f"{site['id']}_S2_brut.tif"
-        s2.download(str(brut), format="GTiff")
+        recuperer(connexion, s2, brut)
         ajuster(brut, s2_final, en_db=False)
 
 
@@ -179,6 +220,7 @@ def main():
     ap = argparse.ArgumentParser()
     ap.add_argument("--liste", action="store_true", help="afficher les scènes sans télécharger")
     ap.add_argument("--max", type=int, default=None, help="nombre maximal de scènes")
+    ap.add_argument("--paralleles", type=int, default=2, help="scènes téléchargées en même temps")
     args = ap.parse_args()
 
     sites = tous_les_sites()[: args.max]
@@ -195,15 +237,28 @@ def main():
 
     import openeo
     connexion = openeo.connect("openeo.dataspace.copernicus.eu").authenticate_oidc()
+    from concurrent.futures import ThreadPoolExecutor
+
+    a_faire = [s for s in sites if not ((SORTIE / f"{s['id']}_S1.tif").exists()
+                                        and (SORTIE / f"{s['id']}_S2.tif").exists())]
+    print(f"{len(sites) - len(a_faire)} déjà présentes, {len(a_faire)} à télécharger "
+          f"({args.paralleles} en parallèle).", flush=True)
     erreurs = []
-    for k, site in enumerate(sites, 1):
-        print(f"[{k}/{len(sites)}] {site['id']} ...", flush=True)
+
+    def traiter(k_site):
+        k, site = k_site
+        print(f"[{k}/{len(a_faire)}] {site['id']} : début", flush=True)
         try:
             telecharger(connexion, site)
+            print(f"[{k}/{len(a_faire)}] {site['id']} : OK", flush=True)
         except Exception as e:  # une scène ratée ne doit pas arrêter les autres
-            print(f"   ECHEC : {e}")
+            print(f"[{k}/{len(a_faire)}] {site['id']} : ECHEC : {e}", flush=True)
             erreurs.append((site["id"], str(e)[:200]))
-    print(f"\nTerminé. {len(sites) - len(erreurs)} scènes OK, {len(erreurs)} échecs.")
+
+    with ThreadPoolExecutor(max_workers=args.paralleles) as pool:
+        list(pool.map(traiter, enumerate(a_faire, 1)))
+    print(f"\nTerminé. {len(a_faire) - len(erreurs)} scènes OK, {len(erreurs)} échecs. "
+          f"Relancer la même commande pour réessayer les échecs.")
     for i, e in erreurs:
         print(f" - {i} : {e}")
 

@@ -15,7 +15,6 @@ Usage : python src/construire_index.py
 """
 import hashlib
 import math
-import re
 
 import pandas as pd
 
@@ -47,28 +46,20 @@ def sen1floods11():
 
 
 def perm_water():
-    """814 tuiles d'eau permanente (Sen1Floods11), si téléchargées."""
-    dossier = DATA / "sen1floods11" / "perm_water"
+    """814 tuiles d'eau permanente converties par src/convertir_perm_water.py, si présentes.
+
+    Radar seul, calibration approximative : ensemble « eval_eau_permanente »,
+    utilisé seulement pour mesurer les fausses alertes, jamais pour l'entraînement.
+    """
+    dossier = DATA / "sen1floods11" / "perm_water_db"
     if not dossier.exists():
         return pd.DataFrame()
-    import rasterio
     lignes = []
-    for p in sorted(dossier.rglob("*.tif")):
-        if not p.name.startswith("sentinel_"):
-            continue
-        nombres = re.findall(r"-?\d+\.\d+", p.stem)
-        if len(nombres) < 2:
-            continue
-        lon, lat = float(nombres[-2]), float(nombres[-1])
-        with rasterio.open(p) as src:
-            nb = src.count
-        rel = str(p.relative_to(DATA)).replace("\\", "/")
-        masque = next(iter(dossier.rglob(p.name.replace("sentinel_", "water_"))), None)
+    for p in sorted(dossier.glob("perm_*_S1.tif")):
         lignes.append(dict(
-            id=p.stem, source="sen1floods11_perm_water", categorie="eau_permanente_mondiale",
-            pays="", ensemble=ensemble_maille(lon, lat), classe="NORMAL",
-            s1=rel if nb == 2 else "", s2=rel if nb >= 12 else "",
-            masque=str(masque.relative_to(DATA)).replace("\\", "/") if masque else ""))
+            id=p.stem.replace("_S1", ""), source="sen1floods11_perm_water",
+            categorie="eau_permanente_mondiale", pays="", ensemble="eval_eau_permanente",
+            classe="NORMAL", s1=f"sen1floods11/perm_water_db/{p.name}", s2="", masque=""))
     return pd.DataFrame(lignes)
 
 

@@ -1,6 +1,6 @@
 """Étape 2.5 : jeu de données PyTorch prêt pour l'entraînement (étapes 3 et 4).
 
-- Classes : NORMAL = 0, ALERTE = 1. La zone grise et les tuiles écartées sont exclues.
+- Classes : NORMAL = 0, INONDATION = 1, FEU = 2. La zone grise et les tuiles écartées sont exclues.
 - Modality dropout (entraînement) : masque S1 ou S2 au hasard, pour qu'un même
   modèle fonctionne avec S1 seul, S2 seul ou les deux (cadrage, section 6).
 - Réduction optionnelle de la taille (ex. 128 px) pour un modèle léger.
@@ -8,7 +8,7 @@
 Exemple :
     from dataset import TuilesDataset
     train = TuilesDataset("train", taille=128, modality_dropout=0.3)
-    x, y, dispo = train[0]     # x : (15, 128, 128), y : 0/1, dispo : (2,)
+    x, y, dispo = train[0]     # x : (15, 128, 128), y : 0/1/2, dispo : (2,)
 """
 import sys
 from pathlib import Path
@@ -20,7 +20,7 @@ sys.path.insert(0, str(Path(__file__).resolve().parent))
 from config import DATA  # noqa: E402
 from donnees import charger, charger_stats, preparer  # noqa: E402
 
-CLASSES = {"NORMAL": 0, "ALERTE": 1}
+CLASSES = {"NORMAL": 0, "INONDATION": 1, "FEU": 2}
 
 
 def reduire(x, taille):
@@ -71,6 +71,6 @@ class TuilesDataset(Dataset):
         return torch.from_numpy(x), torch.tensor(y), torch.from_numpy(dispo)
 
     def poids_classes(self):
-        """Poids inverses des fréquences, pour compenser le déséquilibre ALERTE / NORMAL."""
+        """Poids inverses des fréquences, pour compenser le déséquilibre entre classes."""
         n = self.lignes["classe"].map(CLASSES).value_counts().sort_index()
         return (len(self.lignes) / (len(n) * n)).tolist()

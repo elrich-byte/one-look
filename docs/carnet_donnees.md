@@ -124,3 +124,19 @@ python src/donnees.py --stats           # normalisation (train uniquement)
 python src/donnees.py --verifier        # contrôle de toutes les tuiles
 python src/inconnu.py                   # contrôle des entrées synthétiques
 ```
+
+## 8. Mise à jour du 16/11/2026 : feux de forêt et version finale
+
+- **Classes** : INONDATION / FEU / NORMAL / INCONNU (l'ancienne classe « ALERTE » s'appelle INONDATION).
+- **CaBuAr** : 80 zones brûlées (post-incendie, au moins 2 % brûlé) et 61 images « avant incendie » (classe NORMAL), lues dans `raw/patched/512x512.hdf5`. Le pli 0 va en validation, les autres en apprentissage. Images L2A harmonisées vers l'apparence L1C par une correction linéaire par bande (`src/harmoniser_cabuar.py`, coefficients dans `docs/harmonisation_cabuar.json`).
+- **Feux Copernicus hors Californie** : 10 téléchargés, 6 retenus après vérification visuelle (`docs/figures/feux_copernicus.png`). Test : Evia, Sardaigne, Kangaroo Island, Blue Mountains. Validation : Pedrógão, Leiria. Écartés : Chiquitania, Kabylie (aucune brûlure visible), Fort McMurray (nuages), Manavgat (douteux).
+- **Inconnu** : scènes de lave (La Palma), glacier (Islande), mine (Atacama), salar (Uyuni, radar seul). Banquise du Groenland abandonnée (radar en polarisation HH).
+
+| Ensemble | INONDATION | FEU | NORMAL |
+|---|---|---|---|
+| train | 114 | 55 | 189 |
+| val | 29 | 27 | 38 |
+| test | 35 | 4 | 41 |
+| eval_eau_permanente | | | 814 |
+
+Limite importante : seulement 4 feux en test ; les chiffres sur les feux sont très incertains.

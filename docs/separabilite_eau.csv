@@ -1,0 +1,21 @@
+caracteristique,auc,sens,famille
+"MNDWI (B3, B11)",0.98,plus haut = eau,S2 hors visible
+"NDWI (B3, B8)",0.972,plus haut = eau,S2 hors visible
+"NDVI (B8, B4)",0.958,plus bas = eau,S2 hors visible
+S2 B11,0.95,plus bas = eau,S2 hors visible
+S2 B8A,0.946,plus bas = eau,S2 hors visible
+S2 B8,0.937,plus bas = eau,S2 hors visible
+S2 B7,0.92,plus bas = eau,S2 hors visible
+S2 B6,0.905,plus bas = eau,S2 hors visible
+S2 B12,0.896,plus bas = eau,S2 hors visible
+S1 VH,0.888,plus bas = eau,radar
+S1 VV,0.836,plus bas = eau,radar
+S2 B9,0.833,plus bas = eau,S2 hors visible
+S2 B4,0.689,plus haut = eau,RGB
+RGB bleu - rouge,0.682,plus bas = eau,RGB
+RGB luminosité (R+G+B)/3,0.656,plus haut = eau,RGB
+S2 B2,0.654,plus haut = eau,RGB
+S2 B1,0.646,plus haut = eau,S2 hors visible
+S2 B10,0.615,plus bas = eau,S2 hors visible
+S2 B3,0.607,plus haut = eau,RGB
+S2 B5,0.509,plus bas = eau,S2 hors visible

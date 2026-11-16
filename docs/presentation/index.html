@@ -1,0 +1,549 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>One Look</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,300;9..144,500;9..144,700;9..144,900&family=IBM+Plex+Mono:wght@400;500;600&family=Instrument+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+/* ===========================================
+   THÈME : « relevé topographique »
+   Papier crème, encre marine, deux couleurs de signal :
+   bleu de l'eau (inondation) et orange du feu.
+   =========================================== */
+:root {
+    --papier: #f2ede3;
+    --papier-2: #e8e1d3;
+    --encre: #14213d;
+    --encre-2: #4a5570;
+    --trait: rgba(20, 33, 61, 0.14);
+    --eau: #2f6db3;
+    --feu: #d9641e;
+    --vert: #3d7a4f;
+    --violet: #6b4fa0;
+    --stage-bg: #0d1424;
+    --slide-bg: var(--papier);
+    --font-titre: 'Fraunces', serif;
+    --font-texte: 'Instrument Sans', sans-serif;
+    --font-mono: 'IBM Plex Mono', monospace;
+    --marge: 120px;
+    --ease: cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+* { margin: 0; padding: 0; box-sizing: border-box; }
+
+/* ===========================================
+   BASE FIXE 16:9 (viewport-base.css, intégral)
+   =========================================== */
+html, body { width: 100%; height: 100%; margin: 0; overflow: hidden; background: var(--stage-bg, #000); }
+.deck-viewport { position: fixed; inset: 0; overflow: hidden; background: var(--stage-bg, #000); }
+.deck-stage { position: absolute; left: 0; top: 0; width: 1920px; height: 1080px; overflow: hidden; transform-origin: 0 0; background: var(--slide-bg, #fff); }
+.slide { position: absolute; inset: 0; width: 1920px; height: 1080px; overflow: hidden; display: block; visibility: hidden; opacity: 0; pointer-events: none; background: var(--slide-bg, #fff); }
+.slide.active, .slide.visible { visibility: visible; opacity: 1; pointer-events: auto; z-index: 1; }
+img, video, canvas, svg { max-width: 100%; max-height: 100%; }
+.deck-controls { position: fixed; left: 50%; bottom: 22px; transform: translateX(-50%); z-index: 1000; }
+@media print {
+    html, body { width: 1920px; height: auto; overflow: visible; background: #fff; }
+    .deck-viewport { position: static; overflow: visible; background: #fff; }
+    .deck-stage { position: static; width: auto; height: auto; transform: none !important; background: none; }
+    .slide { position: relative; display: block !important; visibility: visible !important; opacity: 1 !important; pointer-events: auto !important; width: 1920px; height: 1080px; break-after: page; page-break-after: always; }
+    .slide:last-child { break-after: auto; page-break-after: auto; }
+    .deck-controls { display: none !important; }
+}
+@media (prefers-reduced-motion: reduce) {
+    *, *::before, *::after { animation-duration: 0.01ms !important; transition-duration: 0.2s !important; }
+}
+
+/* ===========================================
+   FOND : courbes de niveau + quadrillage de carte
+   =========================================== */
+.slide::before {
+    content: ""; position: absolute; inset: 0; pointer-events: none;
+    background-image:
+        linear-gradient(var(--trait) 1px, transparent 1px),
+        linear-gradient(90deg, var(--trait) 1px, transparent 1px);
+    background-size: 160px 160px;
+    opacity: 0.35;
+}
+.courbes { position: absolute; pointer-events: none; opacity: 0.55; }
+.courbes path { fill: none; stroke: var(--encre); stroke-width: 1.4; opacity: 0.18; }
+
+/* Repères de cadre (coins de carte) et pied de page */
+.cadre { position: absolute; inset: 48px; border: 1.5px solid var(--encre); opacity: 0.85; pointer-events: none; }
+.pied {
+    position: absolute; left: var(--marge); right: var(--marge); bottom: 68px;
+    display: flex; justify-content: space-between;
+    font-family: var(--font-mono); font-size: 20px; letter-spacing: 0.08em; text-transform: uppercase; color: var(--encre-2);
+}
+
+/* ===========================================
+   TYPOGRAPHIE
+   =========================================== */
+.contenu { position: absolute; left: var(--marge); right: var(--marge); top: 120px; bottom: 140px; }
+.etiquette {
+    font-family: var(--font-mono); font-size: 24px; letter-spacing: 0.14em; text-transform: uppercase;
+    color: var(--feu); font-weight: 600; margin-bottom: 26px; display: flex; align-items: center; gap: 18px;
+}
+.etiquette::before { content: ""; width: 56px; height: 3px; background: var(--feu); }
+h1 { font-family: var(--font-titre); font-weight: 900; font-size: 200px; line-height: 0.88; letter-spacing: -0.03em; color: var(--encre); }
+h2 { font-family: var(--font-titre); font-weight: 700; font-size: 84px; line-height: 1.0; letter-spacing: -0.02em; color: var(--encre); max-width: 1500px; }
+h2 em, h1 em { font-style: italic; font-weight: 300; }
+.chapeau { font-family: var(--font-texte); font-size: 38px; line-height: 1.35; color: var(--encre-2); max-width: 1300px; margin-top: 34px; }
+p, li { font-family: var(--font-texte); font-size: 32px; line-height: 1.4; color: var(--encre); }
+.mono { font-family: var(--font-mono); }
+.eau { color: var(--eau); } .feu { color: var(--feu); } .vert { color: var(--vert); } .violet { color: var(--violet); }
+
+/* ===========================================
+   COMPOSANTS
+   =========================================== */
+.grille-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 72px; margin-top: 56px; }
+.grille-3 { display: grid; grid-template-columns: repeat(3, 1fr); gap: 44px; margin-top: 56px; }
+.grille-4 { display: grid; grid-template-columns: repeat(4, 1fr); gap: 32px; margin-top: 56px; }
+.carte {
+    background: rgba(255, 255, 255, 0.55); border: 1.5px solid var(--encre); padding: 38px 40px;
+    box-shadow: 10px 10px 0 var(--papier-2);
+}
+.carte h3 { font-family: var(--font-titre); font-size: 44px; font-weight: 700; margin-bottom: 16px; color: var(--encre); }
+.carte p { font-size: 28px; color: var(--encre-2); }
+.chiffre { font-family: var(--font-titre); font-weight: 900; font-size: 150px; line-height: 0.9; letter-spacing: -0.03em; }
+.chiffre-legende { font-family: var(--font-mono); font-size: 24px; letter-spacing: 0.05em; color: var(--encre-2); margin-top: 18px; text-transform: uppercase; }
+.liste { list-style: none; margin-top: 40px; }
+.liste li { padding: 18px 0 18px 54px; position: relative; border-bottom: 1px solid var(--trait); }
+.liste li::before { content: "◇"; position: absolute; left: 4px; top: 16px; color: var(--feu); font-size: 30px; }
+.figure { border: 1.5px solid var(--encre); background: #fff; padding: 14px; box-shadow: 10px 10px 0 var(--papier-2); }
+.figure img { display: block; width: 100%; height: 100%; object-fit: contain; }
+.legende { font-family: var(--font-mono); font-size: 20px; color: var(--encre-2); margin-top: 16px; letter-spacing: 0.03em; }
+
+/* Pastilles de décision */
+.decision { display: inline-flex; align-items: center; gap: 14px; font-family: var(--font-mono); font-weight: 600; font-size: 30px;
+    padding: 16px 26px; border: 2px solid currentColor; letter-spacing: 0.06em; }
+.decision.eau { color: var(--eau); } .decision.feu { color: var(--feu); } .decision.vert { color: var(--vert); } .decision.violet { color: var(--violet); }
+
+/* Chaîne embarquée (diagramme) */
+.chaine { display: flex; align-items: stretch; gap: 0; margin-top: 70px; }
+.maillon { flex: 1; border: 1.5px solid var(--encre); padding: 34px 30px; background: rgba(255,255,255,0.55); position: relative; }
+.maillon + .maillon { margin-left: 56px; }
+.maillon + .maillon::before { content: "→"; position: absolute; left: -48px; top: 50%; transform: translateY(-50%); font-size: 44px; color: var(--feu); font-family: var(--font-mono); }
+.maillon .num { font-family: var(--font-mono); font-size: 22px; color: var(--feu); letter-spacing: 0.1em; }
+.maillon h3 { font-family: var(--font-titre); font-size: 40px; margin: 10px 0 12px; }
+.maillon p { font-size: 26px; color: var(--encre-2); }
+
+/* Tableau de résultats */
+table { width: 100%; border-collapse: collapse; margin-top: 46px; font-family: var(--font-texte); }
+th { font-family: var(--font-mono); font-size: 21px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.06em; color: var(--encre-2);
+    text-align: left; padding: 0 18px 18px; border-bottom: 2px solid var(--encre); }
+td { font-size: 30px; padding: 20px 18px; border-bottom: 1px solid var(--trait); color: var(--encre); }
+td.n { font-family: var(--font-mono); font-size: 29px; }
+tr.vedette td { background: rgba(217, 100, 30, 0.10); font-weight: 600; }
+.barre { height: 18px; background: var(--encre); display: inline-block; vertical-align: middle; margin-right: 14px; }
+
+/* Bandeau titre */
+.titre-bandeau { position: absolute; left: var(--marge); bottom: 190px; }
+.titre-coord { position: absolute; right: var(--marge); top: 130px; text-align: right; font-family: var(--font-mono); font-size: 22px; line-height: 1.8; color: var(--encre-2); letter-spacing: 0.08em; }
+
+/* ===========================================
+   ANIMATIONS : apparition échelonnée sur la diapo active
+   =========================================== */
+.reveal { opacity: 0; transform: translateY(28px); transition: opacity 0.7s var(--ease), transform 0.7s var(--ease); }
+.slide.visible .reveal { opacity: 1; transform: none; }
+.slide.visible .reveal:nth-child(1) { transition-delay: 0.05s; }
+.slide.visible .reveal:nth-child(2) { transition-delay: 0.15s; }
+.slide.visible .reveal:nth-child(3) { transition-delay: 0.25s; }
+.slide.visible .reveal:nth-child(4) { transition-delay: 0.35s; }
+.slide.visible .reveal:nth-child(5) { transition-delay: 0.45s; }
+.slide.visible .reveal:nth-child(6) { transition-delay: 0.55s; }
+.trace path { stroke-dasharray: 2400; stroke-dashoffset: 2400; }
+.slide.visible .trace path { animation: tracer 3.2s var(--ease) forwards; }
+@keyframes tracer { to { stroke-dashoffset: 0; } }
+
+/* ===========================================
+   CHROME HORS DIAPO : progression + édition
+   =========================================== */
+.progression { position: fixed; left: 0; bottom: 0; height: 4px; background: var(--feu); z-index: 1001; transition: width 0.4s var(--ease); }
+.compteur { position: fixed; right: 22px; bottom: 14px; font-family: 'IBM Plex Mono', monospace; font-size: 13px; color: #9aa6bd; z-index: 1001; }
+.edit-hotzone { position: fixed; top: 0; left: 0; width: 80px; height: 80px; z-index: 10000; }
+.edit-toggle { position: fixed; top: 16px; left: 16px; z-index: 10001; opacity: 0; pointer-events: none; transition: opacity 0.3s;
+    border: 1px solid #9aa6bd; background: #0d1424; color: #fff; font-size: 18px; padding: 8px 12px; cursor: pointer; }
+.edit-toggle.show, .edit-toggle.active { opacity: 1; pointer-events: auto; }
+[contenteditable="true"] { outline: 2px dashed var(--feu); outline-offset: 4px; }
+</style>
+</head>
+<body>
+<div class="deck-viewport">
+<main class="deck-stage" id="deckStage">
+
+<!-- === 1. TITRE === -->
+<section class="slide active visible">
+    <svg class="courbes trace" width="1920" height="1080" viewBox="0 0 1920 1080">
+        <path d="M1050 980 C1180 760 1520 820 1640 600 S1700 220 1880 160"/>
+        <path d="M1110 1040 C1250 800 1560 880 1700 650 S1780 260 1920 220"/>
+        <path d="M990 940 C1120 720 1470 760 1590 560 S1640 190 1820 110"/>
+        <path d="M1180 1080 C1320 860 1600 930 1760 700 S1850 320 1920 300"/>
+    </svg>
+    <div class="cadre"></div>
+    <div class="titre-coord reveal">ORBITE HÉLIOSYNCHRONE · 786 KM<br>TUILE 512 × 512 PX · 10 M / PX<br>DÉCISION À BORD · 1 PASSE</div>
+    <div class="titre-bandeau">
+        <div class="etiquette reveal">Projet d'IA embarquée · novembre 2026</div>
+        <h1 class="reveal">One <em>Look</em></h1>
+        <p class="chapeau reveal">Une image, un regard, une décision : détecter <span class="eau">les inondations</span> et <span class="feu">les feux de forêt</span> directement à bord du satellite, sans fausses alertes.</p>
+    </div>
+    <div class="pied"><span>One Look</span><span>01</span></div>
+</section>
+
+<!-- === 2. LE PROBLÈME === -->
+<section class="slide">
+    <div class="cadre"></div>
+    <div class="contenu">
+        <div class="etiquette reveal">Le problème</div>
+        <h2 class="reveal">Les satellites voient tout. <em>Ils ne peuvent pas tout envoyer.</em></h2>
+        <div class="grille-3">
+            <div class="carte reveal"><h3>Trop d'images</h3><p>Le volume explose ; la liaison vers le sol est courte et coûteuse.</p></div>
+            <div class="carte reveal"><h3>Trop lent</h3><p>Tout analyser au sol retarde l'alerte de plusieurs heures.</p></div>
+            <div class="carte reveal"><h3>Décider à bord</h3><p>Une petite IA trie : n'envoyer en priorité que ce qui compte.</p></div>
+        </div>
+        <div style="margin-top:64px; display:flex; gap:28px;" class="reveal">
+            <span class="decision eau">🌊 INONDATION</span><span class="decision feu">🔥 FEU</span>
+            <span class="decision vert">✓ NORMAL</span><span class="decision violet">? INCONNU</span>
+        </div>
+    </div>
+    <div class="pied"><span>Contexte</span><span>02</span></div>
+</section>
+
+<!-- === 3. LA CHAÎNE EMBARQUÉE === -->
+<section class="slide">
+    <div class="cadre"></div>
+    <div class="contenu">
+        <div class="etiquette reveal">Le scénario</div>
+        <h2 class="reveal">Tout se joue <em>en orbite</em>, en une seule passe.</h2>
+        <div class="chaine reveal">
+            <div class="maillon"><div class="num">01</div><h3>Capteur</h3><p>Optique (13 bandes) ou radar, selon le satellite.</p></div>
+            <div class="maillon"><div class="num">02</div><h3>Contrôles</h3><p>Format, bandes, valeurs : sinon <b>INCONNU</b> sans appeler l'IA.</p></div>
+            <div class="maillon"><div class="num">03</div><h3>Modèle</h3><p>0,2 Mo, 5 ms par tuile sur un seul cœur CPU.</p></div>
+            <div class="maillon"><div class="num">04</div><h3>Décision</h3><p>Alerte envoyée en priorité ; normal gardé ; inconnu vers un humain.</p></div>
+        </div>
+        <p class="chapeau reveal" style="margin-top:70px">Un ordinateur en CPU seul joue ici l'ordinateur de bord : la taille et la vitesse font partie des critères.</p>
+    </div>
+    <div class="pied"><span>Scénario</span><span>03</span></div>
+</section>
+
+<!-- === 4. DONNÉES === -->
+<section class="slide">
+    <div class="cadre"></div>
+    <div class="contenu">
+        <div class="etiquette reveal">Les données</div>
+        <h2 class="reveal">Plus de <em>1 300 tuiles</em>, rassemblées une à une.</h2>
+        <div class="grille-4">
+            <div class="carte reveal"><div class="chiffre eau">446</div><div class="chiffre-legende">crues annotées à la main · 11 pays (Sen1Floods11)</div></div>
+            <div class="carte reveal"><div class="chiffre feu">80</div><div class="chiffre-legende">zones brûlées + 61 images « avant » (CaBuAr)</div></div>
+            <div class="carte reveal"><div class="chiffre">76</div><div class="chiffre-legende">scènes Copernicus : saison sèche, pièges, feux, inconnu</div></div>
+            <div class="carte reveal"><div class="chiffre vert">814</div><div class="chiffre-legende">tuiles d'eau permanente dans le monde</div></div>
+        </div>
+        <p class="chapeau reveal" style="margin-top:60px">Toutes ramenées au même format : 512 × 512 px, 10 m, radar en dB, 13 bandes optiques. Provenance, licences et biais dans le carnet de données.</p>
+    </div>
+    <div class="pied"><span>Données</span><span>04</span></div>
+</section>
+
+<!-- === 5. ÉVALUATION HONNÊTE === -->
+<section class="slide">
+    <div class="cadre"></div>
+    <div class="contenu">
+        <div class="etiquette reveal">Une évaluation honnête</div>
+        <h2 class="reveal">Tester sur des <em>pays jamais vus</em>.</h2>
+        <div class="grille-3">
+            <div class="carte reveal"><h3>Apprentissage</h3><p>USA · Inde · Paraguay · Ghana · Nigeria · Pakistan · Californie (feux)</p></div>
+            <div class="carte reveal"><h3>Réglage</h3><p>Espagne · Mékong · Portugal (feux) · un pli de la Californie</p></div>
+            <div class="carte reveal" style="border-width:3px"><h3 class="feu">Test final</h3><p>Bolivie · Sri Lanka · Somalie · Grèce · Sardaigne · Australie</p></div>
+        </div>
+        <ul class="liste reveal">
+            <li>Le découpage officiel tirait les tuiles au hasard <b>dans chaque pays</b> : des voisines en apprentissage et en test, des scores gonflés.</li>
+            <li>Ici, aucun pays dans deux ensembles ; le test n'est utilisé qu'une fois, à la fin.</li>
+        </ul>
+    </div>
+    <div class="pied"><span>Méthode</span><span>05</span></div>
+</section>
+
+<!-- === 6. CE QUE VOIT S2 === -->
+<section class="slide">
+    <div class="cadre"></div>
+    <div class="contenu" style="display:grid; grid-template-columns: 1.05fr 1fr; gap: 70px;">
+        <div>
+            <div class="etiquette reveal">Comprendre Sentinel-2</div>
+            <h2 class="reveal" style="font-size:72px">L'eau se cache <em>hors du visible</em>.</h2>
+            <table class="reveal">
+                <tr><th>Caractéristique</th><th>Sépare eau / terre</th></tr>
+                <tr><td>Indice MNDWI (vert + SWIR)</td><td class="n"><span class="barre" style="width:196px;background:var(--eau)"></span>0,98</td></tr>
+                <tr><td>Proche infrarouge (B8)</td><td class="n"><span class="barre" style="width:188px;background:var(--eau)"></span>0,94</td></tr>
+                <tr><td>Radar VH</td><td class="n"><span class="barre" style="width:178px;background:var(--eau)"></span>0,89</td></tr>
+                <tr class="vedette"><td>Meilleure bande RGB (rouge)</td><td class="n"><span class="barre" style="width:138px;background:var(--feu)"></span>0,69</td></tr>
+            </table>
+            <p class="legende reveal">AUC sur 444 000 pixels annotés · 0,5 = hasard · 1 = parfait</p>
+        </div>
+        <div class="figure reveal" style="height:760px; align-self:center"><img src="img/signatures_s2.png" alt="Signature spectrale de la terre, de l'eau de crue et de l'eau permanente"></div>
+    </div>
+    <div class="pied"><span>Exploration</span><span>06</span></div>
+</section>
+
+<!-- === 7. RGB vs SWIR === -->
+<section class="slide">
+    <div class="cadre"></div>
+    <div class="contenu">
+        <div class="etiquette reveal">La question de recherche</div>
+        <h2 class="reveal">Que perd-on avec <em>une simple caméra couleur</em> ?</h2>
+        <div class="figure reveal" style="height:600px; margin-top:44px"><img src="img/feux_copernicus.png" alt="Feux vus en couleurs naturelles et en infrarouge"></div>
+        <p class="legende reveal">Haut : couleurs naturelles (RGB). Bas : infrarouge (SWIR). Le brûlé, discret en RGB, ressort en brun-rouge. Quatre de ces dix scènes ont été écartées après vérification visuelle.</p>
+    </div>
+    <div class="pied"><span>Exploration</span><span>07</span></div>
+</section>
+
+<!-- === 8. LES PIÈGES === -->
+<section class="slide">
+    <div class="cadre"></div>
+    <div class="contenu" style="display:grid; grid-template-columns: 1fr 1.1fr; gap: 70px;">
+        <div>
+            <div class="etiquette reveal">Les pièges</div>
+            <h2 class="reveal" style="font-size:72px">Tout ce qui est sombre <em>n'est pas une crue</em>.</h2>
+            <ul class="liste reveal">
+                <li>Ombres de nuages</li>
+                <li>Rivières, rizières, bassins salants</li>
+                <li>Champs labourés (noirs au radar)</li>
+                <li>Petites rivières oubliées par la carte d'eau permanente</li>
+            </ul>
+            <p class="chapeau reveal" style="font-size:30px">Une règle simple par pixel : <b class="feu">100 %</b> de fausses alertes en RGB, <b>38 %</b> avec l'infrarouge.</p>
+        </div>
+        <div class="figure reveal" style="height:780px; align-self:center"><img src="img/fausses_alertes_saison_seche.png" alt="Scènes de saison sèche déclarées inondées par la règle simple"></div>
+    </div>
+    <div class="pied"><span>Référence</span><span>08</span></div>
+</section>
+
+<!-- === 9. LES MODÈLES === -->
+<section class="slide">
+    <div class="cadre"></div>
+    <div class="contenu">
+        <div class="etiquette reveal">Cinq modèles comparés</div>
+        <h2 class="reveal">Même données, même test, <em>entrées différentes</em>.</h2>
+        <table class="reveal">
+            <tr><th>Modèle</th><th>Entrée</th><th>F1</th><th>Fausses alertes</th><th>Taille</th></tr>
+            <tr><td>Petit CNN</td><td>RGB</td><td class="n">0,31</td><td class="n">12 %</td><td class="n">0,2 Mo</td></tr>
+            <tr><td>MobileNetV3 pré-entraîné</td><td>RGB</td><td class="n">0,46</td><td class="n">20 %</td><td class="n">6,1 Mo</td></tr>
+            <tr><td>YOLOv8n (rectangles)</td><td>RGB</td><td class="n">0,54</td><td class="n">29 %</td><td class="n">12,6 Mo</td></tr>
+            <tr><td>CLIP, sans entraînement</td><td>RGB</td><td class="n">0,48</td><td class="n">51 %</td><td class="n">605 Mo</td></tr>
+            <tr class="vedette"><td>Petit CNN</td><td>13 bandes + radar</td><td class="n">0,61</td><td class="n">5 %</td><td class="n">0,2 Mo</td></tr>
+        </table>
+        <p class="legende reveal">Test : 35 inondations, 4 feux, 41 tuiles normales, pays jamais vus. Taille : modèle INT8 quand il existe.</p>
+    </div>
+    <div class="pied"><span>Résultats</span><span>09</span></div>
+</section>
+
+<!-- === 10. RÉSULTAT CLÉ === -->
+<section class="slide">
+    <div class="cadre"></div>
+    <div class="contenu">
+        <div class="etiquette reveal">Le modèle retenu</div>
+        <h2 class="reveal">Petit, rapide, et <em>il ne crie pas au loup</em>.</h2>
+        <div class="grille-4">
+            <div class="reveal"><div class="chiffre feu">5 %</div><div class="chiffre-legende">de fausses alertes sur images normales</div></div>
+            <div class="reveal"><div class="chiffre eau">95 %</div><div class="chiffre-legende">des alertes inondation sont justes</div></div>
+            <div class="reveal"><div class="chiffre">0,2</div><div class="chiffre-legende">Mo une fois compressé (INT8)</div></div>
+            <div class="reveal"><div class="chiffre">5 ms</div><div class="chiffre-legende">par tuile, un seul cœur CPU</div></div>
+        </div>
+        <p class="chapeau reveal" style="margin-top:70px">Le prix : 60 % des inondations trouvées. Un seuil d'alerte réglé sur la validation fait passer les fausses alertes de 56 % à 5 %. Choix assumé : une fausse alerte coûte cher.</p>
+    </div>
+    <div class="pied"><span>Résultats</span><span>10</span></div>
+</section>
+
+<!-- === 11. RGB vs COMPLET === -->
+<section class="slide">
+    <div class="cadre"></div>
+    <div class="contenu">
+        <div class="etiquette reveal">Réponse à la question</div>
+        <h2 class="reveal">Sans infrarouge, <em>l'IA devine plus qu'elle ne voit</em>.</h2>
+        <div class="grille-2">
+            <div class="carte reveal"><h3 class="feu">RGB seul</h3>
+                <p>Même petit CNN : F1 <b>0,31</b>, 17 % des inondations trouvées.</p>
+                <p style="margin-top:14px">Le pré-entraînement (MobileNet : 0,46) et surtout la forme (YOLO : 0,54) aident, sans combler l'écart.</p></div>
+            <div class="carte reveal"><h3 class="eau">Image complète</h3>
+                <p>F1 <b>0,61</b>, précision 95 %, 5 % de fausses alertes.</p>
+                <p style="margin-top:14px">Optique seule (radar masqué) : précision 100 %, 37 % des crues trouvées.</p></div>
+        </div>
+        <p class="chapeau reveal" style="margin-top:56px">Même taille, même vitesse : les bandes infrarouges ne coûtent rien à bord et changent tout.</p>
+    </div>
+    <div class="pied"><span>Résultats</span><span>11</span></div>
+</section>
+
+<!-- === 12. INCONNU === -->
+<section class="slide">
+    <div class="cadre"></div>
+    <div class="contenu">
+        <div class="etiquette reveal">Reconnaître l'inconnu</div>
+        <h2 class="reveal">Savoir dire <em>« je ne sais pas »</em>.</h2>
+        <div class="grille-2">
+            <div class="carte reveal"><h3>Score « énergie »</h3><div class="chiffre" style="font-size:120px; color:var(--encre-2)">0,22</div>
+                <p>AUROC : pire que le hasard. Le bruit aléatoire rend le modèle très sûr de lui.</p></div>
+            <div class="carte reveal"><h3>Distance de Mahalanobis</h3><div class="chiffre violet" style="font-size:120px">1,00</div>
+                <p>AUROC. Lave, glacier, mine, salar, images bruitées ou absurdes : 100 % signalés ; 88 % des images connues gardées.</p></div>
+        </div>
+        <p class="legende reveal" style="margin-top:36px">Distance entre la « signature » interne de l'image et celle des classes apprises ; seuil fixé sur la validation.</p>
+    </div>
+    <div class="pied"><span>Fiabilité</span><span>12</span></div>
+</section>
+
+<!-- === 13. EMBARQUABILITÉ === -->
+<section class="slide">
+    <div class="cadre"></div>
+    <div class="contenu">
+        <div class="etiquette reveal">Alléger</div>
+        <h2 class="reveal">Compresser <em>sans rien perdre</em>… ou pas.</h2>
+        <table class="reveal">
+            <tr><th>Modèle</th><th>Version</th><th>Taille</th><th>ms / tuile</th><th>F1 test</th></tr>
+            <tr><td>Petit CNN complet</td><td>32 bits</td><td class="n">0,76 Mo</td><td class="n">7,9</td><td class="n">0,51</td></tr>
+            <tr class="vedette"><td>Petit CNN complet</td><td>INT8</td><td class="n">0,21 Mo</td><td class="n">4,8</td><td class="n">0,52</td></tr>
+            <tr><td>MobileNetV3 RGB</td><td>32 bits</td><td class="n">6,1 Mo</td><td class="n">1,3</td><td class="n">0,45</td></tr>
+            <tr><td>MobileNetV3 RGB</td><td>INT8</td><td class="n">1,9 Mo</td><td class="n">1,7</td><td class="n feu">0,22</td></tr>
+        </table>
+        <p class="legende reveal">F1 sans seuil d'alerte, ONNX Runtime, un seul cœur CPU. La quantification INT8 divise la taille par 3 à 4 ; elle préserve le petit CNN mais dégrade fortement MobileNet.</p>
+    </div>
+    <div class="pied"><span>Embarquabilité</span><span>13</span></div>
+</section>
+
+<!-- === 14. LIMITES === -->
+<section class="slide">
+    <div class="cadre"></div>
+    <div class="contenu">
+        <div class="etiquette reveal">Analyse des échecs</div>
+        <h2 class="reveal">Ce qui ne marche <em>pas encore</em>.</h2>
+        <ul class="liste reveal" style="column-count:2; column-gap:80px">
+            <li><b>Radar seul</b> : le modèle n'ose plus alerter (aucune alerte avec le seuil).</li>
+            <li><b>Inondations manquées</b> (13 sur 35) : crues diffuses, surtout au Sri Lanka.</li>
+            <li><b>Feux</b> : seulement 4 en test, dont 3 manqués ; CaBuAr ne couvre que la Californie.</li>
+            <li><b>Images Copernicus</b> parfois assemblées sur deux dates.</li>
+            <li><b>Étiquettes</b> : « crue = eau − eau permanente » dépend d'une carte imparfaite.</li>
+            <li><b>CaBuAr</b> harmonisé (L2A → L1C) : correction simple, à valider.</li>
+        </ul>
+    </div>
+    <div class="pied"><span>Limites</span><span>14</span></div>
+</section>
+
+<!-- === 15. CONCLUSION === -->
+<section class="slide">
+    <svg class="courbes trace" width="1920" height="1080" viewBox="0 0 1920 1080">
+        <path d="M0 860 C300 760 520 900 820 820 S1300 620 1920 700"/>
+        <path d="M0 920 C320 820 560 960 860 880 S1340 680 1920 760"/>
+        <path d="M0 980 C340 880 600 1020 900 940 S1380 740 1920 820"/>
+    </svg>
+    <div class="cadre"></div>
+    <div class="contenu">
+        <div class="etiquette reveal">En résumé</div>
+        <h2 class="reveal" style="font-size:96px">Un modèle de <em>0,2 Mo</em> qui alerte peu, mais juste.</h2>
+        <ul class="liste reveal" style="max-width:1450px">
+            <li>L'infrarouge est décisif : le RGB seul ne suffit pas pour l'eau.</li>
+            <li>Le seuil d'alerte et la détection de l'inconnu rendent le système fiable.</li>
+            <li>Suite : un modèle dédié au radar, plus de feux hors Californie, tester sur une vraie carte embarquée.</li>
+        </ul>
+        <p class="legende reveal" style="margin-top:40px">Code, données et rapport : github.com/elrich-byte/one-look</p>
+    </div>
+    <div class="pied"><span>Conclusion</span><span>15</span></div>
+</section>
+
+</main>
+</div>
+
+<div class="progression" id="progression"></div>
+<div class="compteur" id="compteur"></div>
+<div class="edit-hotzone" id="editHotzone"></div>
+<button class="edit-toggle" id="editToggle" title="Mode édition (E)">✏️</button>
+
+<script>
+/* ===========================================
+   CONTRÔLEUR DE PRÉSENTATION
+   Mise à l'échelle de la scène 1920×1080, clavier, tactile, molette
+   =========================================== */
+class Presentation {
+    constructor() {
+        this.slides = [...document.querySelectorAll('.slide')];
+        this.stage = document.getElementById('deckStage');
+        this.courante = 0;
+        this.verrou = false;
+        this.echelle();
+        window.addEventListener('resize', () => this.echelle());
+        document.addEventListener('keydown', e => this.clavier(e));
+        this.tactile();
+        window.addEventListener('wheel', e => {
+            if (this.verrou || document.body.classList.contains('edition')) return;
+            this.verrou = true; setTimeout(() => this.verrou = false, 700);
+            e.deltaY > 0 ? this.aller(this.courante + 1) : this.aller(this.courante - 1);
+        }, { passive: true });
+        this.aller(0);
+    }
+    echelle() {
+        const f = Math.min(window.innerWidth / 1920, window.innerHeight / 1080);
+        const x = (window.innerWidth - 1920 * f) / 2, y = (window.innerHeight - 1080 * f) / 2;
+        this.stage.style.transform = `translate(${x}px, ${y}px) scale(${f})`;
+    }
+    clavier(e) {
+        if (document.body.classList.contains('edition')) return;
+        if (['ArrowRight', 'ArrowDown', ' ', 'PageDown'].includes(e.key)) { e.preventDefault(); this.aller(this.courante + 1); }
+        if (['ArrowLeft', 'ArrowUp', 'PageUp'].includes(e.key)) { e.preventDefault(); this.aller(this.courante - 1); }
+        if (e.key === 'Home') this.aller(0);
+        if (e.key === 'End') this.aller(this.slides.length - 1);
+    }
+    tactile() {
+        let x0 = null;
+        document.addEventListener('touchstart', e => x0 = e.touches[0].clientX, { passive: true });
+        document.addEventListener('touchend', e => {
+            if (x0 === null) return;
+            const dx = e.changedTouches[0].clientX - x0;
+            if (Math.abs(dx) > 50) this.aller(this.courante + (dx < 0 ? 1 : -1));
+            x0 = null;
+        });
+    }
+    aller(i) {
+        this.courante = Math.max(0, Math.min(i, this.slides.length - 1));
+        this.slides.forEach((s, k) => { s.classList.toggle('active', k === this.courante); s.classList.toggle('visible', k === this.courante); });
+        document.getElementById('progression').style.width = `${100 * (this.courante + 1) / this.slides.length}%`;
+        document.getElementById('compteur').textContent = `${this.courante + 1} / ${this.slides.length}`;
+    }
+}
+const presentation = new Presentation();
+
+/* ===========================================
+   ÉDITION EN PLACE (touche E ou coin haut-gauche)
+   Sauvegarde automatique dans le navigateur ; Ctrl+S télécharge le fichier
+   =========================================== */
+(() => {
+    const bouton = document.getElementById('editToggle');
+    const zone = document.getElementById('editHotzone');
+    const cle = 'one-look-edition';
+    let minuterie = null;
+    const editables = () => document.querySelectorAll('.slide h1, .slide h2, .slide h3, .slide p, .slide li, .slide td');
+    try {
+        const sauve = JSON.parse(localStorage.getItem(cle) || 'null');
+        if (sauve) editables().forEach((el, i) => { if (sauve[i] !== undefined) el.innerHTML = sauve[i]; });
+    } catch (e) {}
+    const basculer = () => {
+        const actif = document.body.classList.toggle('edition');
+        bouton.classList.toggle('active', actif);
+        editables().forEach(el => el.contentEditable = actif ? 'true' : 'false');
+        if (!actif) { try { localStorage.setItem(cle, JSON.stringify([...editables()].map(el => el.innerHTML))); } catch (e) {} }
+    };
+    zone.addEventListener('mouseenter', () => { clearTimeout(minuterie); bouton.classList.add('show'); });
+    zone.addEventListener('mouseleave', () => { minuterie = setTimeout(() => { if (!bouton.matches(':hover')) bouton.classList.remove('show'); }, 400); });
+    bouton.addEventListener('mouseenter', () => clearTimeout(minuterie));
+    bouton.addEventListener('mouseleave', () => { minuterie = setTimeout(() => bouton.classList.remove('show'), 400); });
+    bouton.addEventListener('click', basculer);
+    document.addEventListener('keydown', e => {
+        if (e.key.toLowerCase() === 'e' && !document.body.classList.contains('edition') && !e.ctrlKey && !e.metaKey) basculer();
+        else if (e.key === 'Escape' && document.body.classList.contains('edition')) basculer();
+        if ((e.ctrlKey || e.metaKey) && e.key === 's') {
+            e.preventDefault();
+            const html = '<!DOCTYPE html>\n' + document.documentElement.outerHTML;
+            const a = document.createElement('a');
+            a.href = URL.createObjectURL(new Blob([html], { type: 'text/html' }));
+            a.download = 'one-look-presentation.html'; a.click();
+        }
+    });
+})();
+</script>
+</body>
+</html>

@@ -2,6 +2,23 @@
 
 Ce document fixe ce qui mérite une alerte, ce qui n'en mérite pas, et ce que le modèle doit signaler comme inconnu. Les chiffres viennent de `docs/stats_tuiles.csv`, produit par `src/stats_tuiles.py` sur les 446 tuiles annotées à la main de Sen1Floods11.
 
+## 0. Recentrage du 29/10/2026 : One Look RGB
+
+Après le point avec l'encadrant, le projet est recentré :
+
+- **Deux catastrophes** : inondations et **feux de forêt** (zones brûlées). Sortie à quatre issues : **INONDATION / FEU / NORMAL / INCONNU**. Dans l'index, l'ancienne classe « ALERTE » s'appelle désormais « INONDATION ».
+- **Images en couleurs naturelles (RGB)**, format des caméras les plus simples et de YOLO ou des VLM. **Question de recherche** : que perd-on en RGB par rapport à l'image complète (13 bandes S2 + radar S1) ? Les deux versions sont comparées avec les mêmes données et le même découpage.
+- **Modèles comparés** : règles simples (référence), petit CNN, CNN pré-entraîné, YOLO (localisation par rectangles), YOLO-World (détection par texte, sans entraînement), VLM Hugging Face (réponse en texte, trop gros pour l'embarqué, sert de comparaison). Entraînement possible sur Google Colab.
+- **Rendu** : dépôt GitHub, compte rendu écrit, vidéo de démonstration.
+
+Données des feux :
+- **CaBuAr** (Californie, S2 L2A, masques brûlé / non brûlé) : apprentissage.
+- **10 feux hors Californie** téléchargés sur Copernicus (Grèce, Sardaigne, Turquie, Australie ×2 en test ; Portugal ×2, Canada, Bolivie, Algérie en validation) : étiquette donnée par le lieu et la date, à vérifier visuellement.
+
+Pistes écartées (citées comme perspectives) : navires (pas une catastrophe), naufrages et marées noires (trop rares en RGB, visibles surtout au radar), trains (trop petits à 10 m), fumée et avions (annotation manuelle trop longue).
+
+Les sections suivantes restent valables pour les inondations.
+
 ## 1. Scénario
 
 Le modèle tourne **à bord du satellite**, sur l'ordinateur de bord. Pour chaque tuile acquise, il répond en une seule passe :

@@ -1,0 +1,9 @@
+jeu,evaluation,seuil_pct_eau,n,precision,rappel,fausses_alertes,f1,vp,fp,fn,vn,parametres,ms_par_tuile
+RGB (3 bandes),val,8.01,50,0.58,1.0,1.0,0.734,29,21,0,0,4,7.5
+RGB (3 bandes),"val, scènes Copernicus seules",8.01,7,0.0,,1.0,,0,7,0,0,4,7.5
+S2 complet (13 bandes),val,4.45,50,0.778,0.966,0.381,0.862,28,8,1,13,14,25.1
+S2 complet (13 bandes),"val, scènes Copernicus seules",4.45,7,0.0,,0.857,,0,6,0,1,14,25.1
+"S1 radar (VV, VH)",val,6.87,50,0.614,0.931,0.81,0.74,27,17,2,4,3,7.8
+"S1 radar (VV, VH)","val, scènes Copernicus seules",6.87,7,0.0,,1.0,,0,7,0,0,3,7.8
+"Complet (S2 + S1, 15)",val,3.27,50,0.763,1.0,0.429,0.866,29,9,0,12,16,26.3
+"Complet (S2 + S1, 15)","val, scènes Copernicus seules",3.27,7,0.0,,1.0,,0,7,0,0,16,26.3

@@ -71,16 +71,13 @@ def masques_validite(s1, s2):
     return m1, m2
 
 
-def preparer(s1, s2, stats):
-    """Retourne x (15, 512, 512) float32 normalisé et dispo = [S1 lisible, S2 lisible]."""
-    verifier(s1, s2)
+def normaliser(s1, s2, stats):
+    """Normalise S1 et S2 de n'importe quelle taille. Retourne x (15, H, W) et dispo."""
     m1, m2 = masques_validite(s1, s2)
     dispo = np.array([m1 is not None and m1.mean() >= DISPO_MIN,
                       m2 is not None and m2.mean() >= DISPO_MIN], dtype=bool)
-    if not dispo.any():
-        raise EntreeInvalide("aucun capteur lisible (S1 absent ou vide, S2 absent ou vide)")
-
-    x = np.zeros((len(BANDES_S1) + len(BANDES_S2), TAILLE, TAILLE), dtype="float32")
+    ref = s1 if s1 is not None else s2
+    x = np.zeros((len(BANDES_S1) + len(BANDES_S2),) + ref.shape[1:], dtype="float32")
     moy, ec = np.array(stats["moyenne"], "float32"), np.array(stats["ecart_type"], "float32")
     if dispo[0]:
         a = np.clip(s1, S1_MIN, S1_MAX)
@@ -90,6 +87,15 @@ def preparer(s1, s2, stats):
         a = np.clip(s2 / 10000.0, 0, S2_MAX)
         a = (a - moy[2:, None, None]) / ec[2:, None, None]
         x[2:] = np.where(m2, np.nan_to_num(a), 0)
+    return x, dispo
+
+
+def preparer(s1, s2, stats):
+    """Retourne x (15, 512, 512) float32 normalisé et dispo = [S1 lisible, S2 lisible]."""
+    verifier(s1, s2)
+    x, dispo = normaliser(s1, s2, stats)
+    if not dispo.any():
+        raise EntreeInvalide("aucun capteur lisible (S1 absent ou vide, S2 absent ou vide)")
     return x, dispo
 
 

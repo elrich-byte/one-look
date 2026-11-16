@@ -77,11 +77,35 @@ NEGATIFS = [
     ("neg_nuages_borneo", "nuages", 114.0, 1.0, "2020-11-01", "2020-11-20", 100),
 ]
 
+# Feux de forêt hors Californie (classe FEU) : zones brûlées vues quelques semaines
+# après l'incendie. Étiquette donnée par le lieu et la date (pas de masque) :
+# à vérifier visuellement après téléchargement. Servent surtout à tester le
+# modèle sur des feux hors de CaBuAr (Californie).
+FEUX = [
+    ("feu_evia_2021", "zone_brulee", 23.3, 38.85, "2021-08-20", "2021-09-30", 15),
+    ("feu_kangaroo_island_2020", "zone_brulee", 136.75, -35.85, "2020-01-20", "2020-03-01", 20),
+    ("feu_blue_mountains_2020", "zone_brulee", 150.3, -33.6, "2020-01-20", "2020-03-01", 20),
+    ("feu_pedrogao_2017", "zone_brulee", -8.2, 39.95, "2017-07-01", "2017-08-31", 15),
+    ("feu_leiria_2017", "zone_brulee", -8.95, 39.8, "2017-10-20", "2017-12-15", 30),
+    ("feu_fort_mcmurray_2016", "zone_brulee", -111.35, 56.65, "2016-06-15", "2016-08-31", 20),
+    ("feu_manavgat_2021", "zone_brulee", 31.55, 36.88, "2021-08-10", "2021-09-30", 15),
+    ("feu_sardaigne_2021", "zone_brulee", 8.62, 40.12, "2021-08-01", "2021-09-15", 15),
+    ("feu_kabylie_2021", "zone_brulee", 4.2, 36.7, "2021-08-15", "2021-09-30", 20),
+    ("feu_chiquitania_2019", "zone_brulee", -60.0, -17.0, "2019-09-15", "2019-10-31", 30),
+]
+
+# Répartition fixe des feux : CaBuAr (Californie) sert à l'apprentissage, ces feux
+# servent à la validation et au test, chaque pays dans un seul ensemble.
+ENSEMBLE_FEUX = {
+    "feu_pedrogao_2017": "val", "feu_leiria_2017": "val", "feu_fort_mcmurray_2016": "val",
+    "feu_chiquitania_2019": "val", "feu_kabylie_2021": "val",
+    "feu_evia_2021": "test", "feu_sardaigne_2021": "test", "feu_manavgat_2021": "test",
+    "feu_kangaroo_island_2020": "test", "feu_blue_mountains_2020": "test",
+}
+
 # Scènes « inconnues » (jamais vues à l'entraînement, à signaler INCONNU).
 INCONNUS = [
     ("inc_lave_lapalma", "lave_volcan", -17.88, 28.61, "2021-11-01", "2021-12-10", 30),
-    ("inc_incendie_evia", "zone_brulee", 23.3, 38.85, "2021-08-20", "2021-09-30", 15),
-    ("inc_incendie_australie", "zone_brulee", 150.3, -33.6, "2020-01-20", "2020-03-01", 20),
     ("inc_banquise_groenland", "glace_mer", -51.0, 69.2, "2021-03-15", "2021-04-30", 20),
     ("inc_glacier_islande", "glacier", -16.7, 64.4, "2021-07-01", "2021-08-31", 30),
     ("inc_mine_atacama", "mine_ciel_ouvert", -68.9, -24.27, "2020-10-01", "2020-11-30", 10),
@@ -96,22 +120,24 @@ def sites_saison_seche():
     index = index.merge(centres, on="tile")
     sites = []
     for pays, (debut, fin) in SAISON_SECHE.items():
-        choix = (index[(index["pays"] == pays) & (index["classe"] == "ALERTE")]
+        choix = (index[(index["pays"] == pays) & (index["classe"] == "INONDATION")]
                  .nlargest(NB_PAR_PAYS[pays], "crue_robuste_pct"))
         for _, r in choix.iterrows():
             sites.append(dict(id=f"sec_{r['tile']}", categorie="hors_crue_meme_lieu", pays=pays,
                               lon=r["lon"], lat=r["lat"], debut=debut, fin=fin,
                               nuages_max=40 if pays == "India" else 20,
-                              classe="NORMAL", groupe="pays"))
+                              classe="NORMAL", groupe="pays", ensemble_fixe=""))
     return sites
 
 
 def tous_les_sites():
     sites = sites_saison_seche()
-    for liste, classe in [(NEGATIFS, "NORMAL"), (INCONNUS, "INCONNU")]:
+    for liste, classe in [(NEGATIFS, "NORMAL"), (FEUX, "FEU"), (INCONNUS, "INCONNU")]:
         for (i, cat, lon, lat, d, f, n) in liste:
+            fixe = ENSEMBLE_FEUX.get(i, "")
             sites.append(dict(id=i, categorie=cat, pays="", lon=lon, lat=lat, debut=d, fin=f,
-                              nuages_max=n, classe=classe, groupe="maille"))
+                              nuages_max=n, classe=classe, groupe="fixe" if fixe else "maille",
+                              ensemble_fixe=fixe))
     return sites
 
 
@@ -235,6 +261,11 @@ def main():
     if args.liste:
         return
 
+    try:  # utiliser les certificats de Windows (évite les erreurs SSL derrière un antivirus)
+        import truststore
+        truststore.inject_into_ssl()
+    except ImportError:
+        pass
     import openeo
     connexion = openeo.connect("openeo.dataspace.copernicus.eu").authenticate_oidc()
     from concurrent.futures import ThreadPoolExecutor

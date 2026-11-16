@@ -1,6 +1,6 @@
 """Étapes 2.1 à 2.4 : rassembler toutes les sources dans data/index.csv.
 
-Une ligne par tuile, avec : source, catégorie, classe (ALERTE / NORMAL / GRIS /
+Une ligne par tuile, avec : source, catégorie, classe (INONDATION / FEU / NORMAL / GRIS /
 ECARTEE / INCONNU), ensemble (train / val / test / inconnu) et chemins S1 / S2.
 
 Règles de découpage (aucune fuite géographique) :
@@ -63,6 +63,11 @@ def perm_water():
     return pd.DataFrame(lignes)
 
 
+# Vérification visuelle des feux téléchargés (docs/figures/feux_copernicus.png) :
+# aucune brûlure visible dans la tuile, ou tuile couverte de nuages -> écartés.
+FEUX_NON_CONFIRMES = {"feu_chiquitania_2019", "feu_kabylie_2021", "feu_fort_mcmurray_2016", "feu_manavgat_2021"}
+
+
 def scenes():
     """Scènes openEO (hors crue, négatifs, inconnues) et CaBuAr, si téléchargées."""
     dossier = DATA / "scenes"
@@ -74,20 +79,32 @@ def scenes():
                 continue
             if r["classe"] == "INCONNU":
                 ens = "inconnu"
+            elif r["groupe"] == "fixe":
+                ens = r["ensemble_fixe"]
             elif r["groupe"] == "pays":
                 ens = ensemble_pays(r["pays"])
             else:
                 ens = ensemble_maille(r["lon"], r["lat"])
+            classe = "ECARTEE" if r["id"] in FEUX_NON_CONFIRMES else r["classe"]
             lignes.append(dict(id=r["id"], source="copernicus_openeo", categorie=r["categorie"],
                                pays=r["pays"] if isinstance(r["pays"], str) else "", ensemble=ens,
-                               classe=r["classe"],
+                               classe=classe,
                                s1=f"scenes/{s1.name}" if s1.exists() else "",
                                s2=f"scenes/{s2.name}" if s2.exists() else "", masque=""))
     if (dossier / "manifest_cabuar.csv").exists():
+        # Le pli 0 de CaBuAr va en validation (les feux de validation hors Californie sont
+        # trop peu nombreux pour choisir le meilleur modèle) ; jamais en test.
         for _, r in pd.read_csv(dossier / "manifest_cabuar.csv").iterrows():
-            lignes.append(dict(id=r["id"], source="cabuar", categorie=r["categorie"], pays="",
-                               ensemble="inconnu", classe="INCONNU", s1="",
-                               s2=f"scenes/{r['id']}_S2.tif", masque=""))
+            ens_cabuar = "val" if int(r.get("pli", -1)) == 0 else "train"
+            # CaBuAr (Californie uniquement) sert à l'apprentissage des feux ; les feux
+            # hors Californie (Copernicus) servent à la validation et au test.
+            lignes.append(dict(id=r["id"], source="cabuar", categorie="zone_brulee", pays="USA-Californie",
+                               ensemble=ens_cabuar, classe="FEU", s1="",
+                               s2=f"scenes/{r['id']}_S2.tif", masque=f"scenes/{r['id']}_masque.tif"))
+            avant = r["id"].replace("cabuar_", "cabuar_avant_")
+            if (dossier / f"{avant}_S2.tif").exists():
+                lignes.append(dict(id=avant, source="cabuar", categorie="avant_incendie", pays="USA-Californie",
+                                   ensemble=ens_cabuar, classe="NORMAL", s1="", s2=f"scenes/{avant}_S2.tif", masque=""))
     return pd.DataFrame(lignes)
 
 
@@ -97,7 +114,7 @@ def main():
     df.to_csv(DATA / "index.csv", index=False)
     print(f"{len(df)} tuiles -> {DATA / 'index.csv'}\n")
     print(pd.crosstab([df["source"], df["ensemble"]], df["classe"], margins=True).to_string())
-    utiles = df[df["classe"].isin(["ALERTE", "NORMAL"])]
+    utiles = df[df["classe"].isin(["INONDATION", "FEU", "NORMAL"])]
     print("\nPour l'entraînement et l'évaluation (hors zone grise et écartées) :")
     print(pd.crosstab(utiles["ensemble"], utiles["classe"], margins=True).to_string())
 

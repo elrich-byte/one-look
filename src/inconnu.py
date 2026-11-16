@@ -51,7 +51,7 @@ def main():
     import pandas as pd
     from config import DATA
     index = pd.read_csv(DATA / "index.csv").fillna("")
-    ligne = index[(index["ensemble"] == "test") & (index["classe"] == "ALERTE")].iloc[0]
+    ligne = index[(index["ensemble"] == "test") & (index["classe"] == "INONDATION")].iloc[0]
     s1, s2 = charger(ligne)
     stats = charger_stats()
     for type_, famille in TYPES.items():

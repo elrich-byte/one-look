@@ -1,11 +1,18 @@
-"""Étape 2.4 : exporter quelques zones brûlées de CaBuAr comme scènes « inconnues ».
+"""Exporter des zones brûlées de CaBuAr au format du projet (classe FEU, + NORMAL).
 
-Un incendie est un phénomène que le modèle n'a jamais vu : il doit répondre INCONNU
-(ou au moins ne pas lever d'alerte inondation). CaBuAr ne contient que Sentinel-2
-(12 bandes, sans B10) : on insère une bande B10 nulle pour obtenir 13 bandes.
+CaBuAr (Hugging Face, DarthReca/california_burned_areas, fichier raw/patched/512x512.hdf5,
+5,9 Go) contient 534 zones de 512 x 512 en Californie, chacune avec une image S2 L2A
+avant l'incendie (pre_fire), après (post_fire) et le masque brûlé.
+Le fichier est d'abord téléchargé en entier dans data/cabuar/ (une seule fois),
+puis lu en local.
 
-Usage : python -m pip install datasets hdf5plugin
-        python src/exporter_cabuar.py --n 15
+- post_fire avec au moins 2 % de brûlé -> classe FEU (<id>_S2.tif + <id>_masque.tif)
+- pre_fire de la même zone -> classe NORMAL (cabuar_avant_<k>_S2.tif), même lieu sans feu
+
+12 bandes (B1-B9, B8A, B11, B12, sans B10) : on insère une bande B10 nulle pour avoir
+les 13 bandes du projet. Toutes ces zones sont en Californie : apprentissage seulement.
+
+Usage : python src/exporter_cabuar.py --n 80
 """
 import argparse
 import csv
@@ -18,58 +25,66 @@ sys.path.insert(0, str(Path(__file__).resolve().parent))
 from config import DATA  # noqa: E402
 
 SORTIE = DATA / "scenes"
+FICHIER = "datasets/DarthReca/california_burned_areas/raw/patched/512x512.hdf5"
 
 
-def trouver(item, nb_canaux=None, dims=None):
-    for k, v in item.items():
-        a = np.asarray(v)
-        if dims and a.ndim != dims:
-            continue
-        if nb_canaux is None or nb_canaux in a.shape:
-            return k, a
-    return None, None
+def ecrire(chemin, a, dtype="float32"):
+    import rasterio
+    with rasterio.open(chemin, "w", driver="GTiff", height=a.shape[1], width=a.shape[2],
+                       count=a.shape[0], dtype=dtype, compress="deflate") as dst:
+        dst.write(a.astype(dtype))
+
+
+def vers_13_bandes(img):
+    a = np.moveaxis(np.asarray(img), -1, 0).astype("float32")      # (12, H, W)
+    return np.insert(a, 10, 0, axis=0)                              # B10 nulle
 
 
 def main():
-    import rasterio
-    from datasets import load_dataset
+    try:
+        import truststore
+        truststore.inject_into_ssl()
+    except ImportError:
+        pass
+    import h5py
+    import hdf5plugin  # noqa: F401  (filtre de compression BZip2)
 
     ap = argparse.ArgumentParser()
-    ap.add_argument("--n", type=int, default=15)
-    ap.add_argument("--min-brule", type=float, default=5.0, help="%% minimal de zone brûlée")
+    ap.add_argument("--n", type=int, default=80)
+    ap.add_argument("--min-brule", type=float, default=2.0, help="%% minimal de zone brûlée")
     args = ap.parse_args()
 
-    ds = load_dataset("DarthReca/california_burned_areas", name="post-fire", split="train", streaming=True)
     SORTIE.mkdir(parents=True, exist_ok=True)
+    from huggingface_hub import hf_hub_download
+    local = hf_hub_download("DarthReca/california_burned_areas", "raw/patched/512x512.hdf5",
+                            repo_type="dataset", local_dir=DATA / "cabuar")
+    h = h5py.File(local, "r")
+    cles = sorted(h.keys())
+    rng = np.random.default_rng(0)
+    rng.shuffle(cles)                     # tirage varié parmi les incendies et les plis
     lignes, k = [], 0
-    for item in ds:
-        cle_img, img = trouver(item, nb_canaux=12, dims=3)
-        cle_msk, msk = trouver({c: v for c, v in item.items() if c != cle_img}, dims=None)
-        if img is None:
-            print("Clés trouvées :", list(item.keys()))
-            raise SystemExit("Image à 12 canaux introuvable : adapter le script.")
-        if img.shape[-1] == 12:                      # (H, W, C) -> (C, H, W)
-            img = np.moveaxis(img, -1, 0)
-        msk = np.squeeze(np.asarray(item.get("mask", msk)))
-        brule = 100 * float((msk > 0).mean())
+    for cle in cles:
+        g = h[cle]
+        masque = np.asarray(g["mask"])[..., 0] > 0
+        brule = 100 * float(masque.mean())
         if brule < args.min_brule:
             continue
-        img = img.astype("float32")
-        s2 = np.insert(img, 10, 0, axis=0)[:, :512, :512]   # B10 nulle, 13 bandes
-        ident = f"inc_cabuar_{k:02d}"
-        with rasterio.open(SORTIE / f"{ident}_S2.tif", "w", driver="GTiff", height=s2.shape[1],
-                           width=s2.shape[2], count=13, dtype="float32", compress="deflate") as dst:
-            dst.write(s2)
-        lignes.append(dict(id=ident, categorie="zone_brulee_cabuar", brule_pct=round(brule, 1)))
-        print(f"{ident} : {brule:.1f} % brûlé")
+        ident = f"cabuar_{k:03d}"
+        if not (SORTIE / f"{ident}_S2.tif").exists():
+            ecrire(SORTIE / f"{ident}_S2.tif", vers_13_bandes(g["post_fire"]))
+            ecrire(SORTIE / f"{ident}_masque.tif", masque[None].astype("uint8"), "uint8")
+            if "pre_fire" in g:
+                ecrire(SORTIE / f"cabuar_avant_{k:03d}_S2.tif", vers_13_bandes(g["pre_fire"]))
+        lignes.append(dict(id=ident, cle=cle, pli=int(g.attrs.get("fold", -1)), brule_pct=round(brule, 1)))
+        print(f"{ident} ({cle}) : {brule:.1f} % brûlé", flush=True)
         k += 1
         if k >= args.n:
             break
-    with open(SORTIE / "manifest_cabuar.csv", "w", newline="", encoding="utf-8") as f:
-        w = csv.DictWriter(f, fieldnames=["id", "categorie", "brule_pct"])
+    with open(SORTIE / "manifest_cabuar.csv", "w", newline="", encoding="utf-8") as fo:
+        w = csv.DictWriter(fo, fieldnames=["id", "cle", "pli", "brule_pct"])
         w.writeheader()
         w.writerows(lignes)
-    print(f"{k} scènes exportées.")
+    print(f"{k} zones exportées.")
 
 
 if __name__ == "__main__":

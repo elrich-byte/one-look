@@ -231,3 +231,10 @@ data/*
 *.pt
 *.onnx
 .venv/
+
+# Modèles allégés livrés avec le dépôt (petits) ; le reste est régénérable
+!modeles/
+modeles/yolo/
+!modeles/*.int8.onnx
+yolov8n.pt
+__pycache__/

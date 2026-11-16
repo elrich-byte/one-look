@@ -1,0 +1,2392 @@
+{
+ "cnn_rgb": {
+  "modele": "cnn_rgb",
+  "entree": "rgb",
+  "parametres": 186211,
+  "seuil_alerte": 0.8,
+  "val_sans_seuil": {
+   "INONDATION": {
+    "precision": 0.75,
+    "rappel": 0.41379310344827586,
+    "n": 29
+   },
+   "FEU": {
+    "precision": 0.5531914893617021,
+    "rappel": 0.9629629629629629,
+    "n": 27
+   },
+   "fausses_alertes": 0.6363636363636364,
+   "n_normaux": 33,
+   "f1_macro": 0.5476052323509951,
+   "exactitude": 0.5617977528089888,
+   "confusion": [
+    [
+     12,
+     4,
+     17
+    ],
+    [
+     13,
+     12,
+     4
+    ],
+    [
+     1,
+     0,
+     26
+    ]
+   ]
+  },
+  "val": {
+   "INONDATION": {
+    "precision": null,
+    "rappel": 0.0,
+    "n": 29
+   },
+   "FEU": {
+    "precision": 0.8148148148148148,
+    "rappel": 0.8148148148148148,
+    "n": 27
+   },
+   "fausses_alertes": 0.15151515151515152,
+   "n_normaux": 33,
+   "f1_macro": 0.4680961663417804,
+   "exactitude": 0.5617977528089888,
+   "confusion": [
+    [
+     28,
+     0,
+     5
+    ],
+    [
+     29,
+     0,
+     0
+    ],
+    [
+     5,
+     0,
+     22
+    ]
+   ],
+   "erreurs": [
+    {
+     "id": "Mekong_1149855",
+     "vrai": "INONDATION",
+     "predit": "NORMAL",
+     "categorie": "crue_evenement"
+    },
+    {
+     "id": "Mekong_1248200",
+     "vrai": "INONDATION",
+     "predit": "NORMAL",
+     "categorie": "crue_evenement"
+    },
+    {
+     "id": "Mekong_1282475",
+     "vrai": "INONDATION",
+     "predit": "NORMAL",
+     "categorie": "crue_evenement"
+    },
+    {
+     "id": "Mekong_1395593",
+     "vrai": "INONDATION",
+     "predit": "NORMAL",
+     "categorie": "crue_evenement"
+    },
+    {
+     "id": "Mekong_1396181",
+     "vrai": "INONDATION",
+     "predit": "NORMAL",
+     "categorie": "crue_evenement"
+    },
+    {
+     "id": "Mekong_1439641",
+     "vrai": "INONDATION",
+     "predit": "NORMAL",
+     "categorie": "crue_evenement"
+    },
+    {
+     "id": "Mekong_1443339",
+     "vrai": "INONDATION",
+     "predit": "NORMAL",
+     "categorie": "crue_evenement"
+    },
+    {
+     "id": "Mekong_16233",
+     "vrai": "INONDATION",
+     "predit": "NORMAL",
+     "categorie": "crue_evenement"
+    },
+    {
+     "id": "Mekong_293769",
+     "vrai": "INONDATION",
+     "predit": "NORMAL",
+     "categorie": "crue_evenement"
+    },
+    {
+     "id": "Mekong_342411",
+     "vrai": "INONDATION",
+     "predit": "NORMAL",
+     "categorie": "crue_evenement"
+    },
+    {
+     "id": "Mekong_382276",
+     "vrai": "INONDATION",
+     "predit": "NORMAL",
+     "categorie": "crue_evenement"
+    },
+    {
+     "id": "Mekong_52610",
+     "vrai": "INONDATION",
+     "predit": "NORMAL",
+     "categorie": "crue_evenement"
+    },
+    {
+     "id": "Mekong_596495",
+     "vrai": "INONDATION",
+     "predit": "NORMAL",
+     "categorie": "crue_evenement"
+    },
+    {
+     "id": "Mekong_774566",
+     "vrai": "INONDATION",
+     "predit": "NORMAL",
+     "categorie": "crue_evenement"
+    },
+    {
+     "id": "Mekong_846007",
+     "vrai": "INONDATION",
+     "predit": "NORMAL",
+     "categorie": "crue_evenement"
+    },
+    {
+     "id": "Mekong_922373",
+     "vrai": "INONDATION",
+     "predit": "NORMAL",
+     "categorie": "crue_evenement"
+    },
+    {
+     "id": "Mekong_98310",
+     "vrai": "INONDATION",
+     "predit": "NORMAL",
+     "categorie": "crue_evenement"
+    },
+    {
+     "id": "Spain_1167260",
+     "vrai": "INONDATION",
+     "predit": "NORMAL",
+     "categorie": "crue_evenement"
+    },
+    {
+     "id": "Spain_1199913",
+     "vrai": "INONDATION",
+     "predit": "NORMAL",
+     "categorie": "crue_evenement"
+    },
+    {
+     "id": "Spain_337094",
+     "vrai": "INONDATION",
+     "predit": "NORMAL",
+     "categorie": "crue_evenement"
+    },
+    {
+     "id": "Spain_4282030",
+     "vrai": "INONDATION",
+     "predit": "NORMAL",
+     "categorie": "crue_evenement"
+    },
+    {
+     "id": "Spain_5650136",
+     "vrai": "INONDATION",
+     "predit": "NORMAL",
+     "categorie": "crue_evenement"
+    },
+    {
+     "id": "Spain_6095801",
+     "vrai": "INONDATION",
+     "predit": "NORMAL",
+     "categorie": "crue_evenement"
+    },
+    {
+     "id": "Spain_7370579",
+     "vrai": "INONDATION",
+     "predit": "NORMAL",
+     "categorie": "crue_evenement"
+    },
+    {
+     "id": "Spain_7387658",
+     "vrai": "INONDATION",
+     "predit": "NORMAL",
+     "categorie": "crue_evenement"
+    },
+    {
+     "id": "Spain_7856615",
+     "vrai": "INONDATION",
+     "predit": "NORMAL",
+     "categorie": "crue_evenement"
+    },
+    {
+     "id": "Spain_8199661",
+     "vrai": "INONDATION",
+     "predit": "NORMAL",
+     "categorie": "crue_evenement"
+    },
+    {
+     "id": "Spain_8372658",
+     "vrai": "INONDATION",
+     "predit": "NORMAL",
+     "categorie": "crue_evenement"
+    },
+    {
+     "id": "Spain_8565131",
+     "vrai": "INONDATION",
+     "predit": "NORMAL",
+     "categorie": "crue_evenement"
+    },
+    {
+     "id": "feu_pedrogao_2017",
+     "vrai": "FEU",
+     "predit": "NORMAL",
+     "categorie": "zone_brulee"
+    },
+    {
+     "id": "feu_leiria_2017",
+     "vrai": "FEU",
+     "predit": "NORMAL",
+     "categorie": "zone_brulee"
+    },
+    {
+     "id": "cabuar_011",
+     "vrai": "FEU",
+     "predit": "NORMAL",
+     "categorie": "zone_brulee"
+    },
+    {
+     "id": "cabuar_028",
+     "vrai": "FEU",
+     "predit": "NORMAL",
+     "categorie": "zone_brulee"
+    },
+    {
+     "id": "cabuar_avant_039",
+     "vrai": "NORMAL",
+     "predit": "FEU",
+     "categorie": "avant_incendie"
+    },
+    {
+     "id": "cabuar_avant_046",
+     "vrai": "NORMAL",
+     "predit": "FEU",
+     "categorie": "avant_incendie"
+    },
+    {
+     "id": "cabuar_avant_054",
+     "vrai": "NORMAL",
+     "predit": "FEU",
+     "categorie": "avant_incendie"
+    },
+    {
+     "id": "cabuar_055",
+     "vrai": "FEU",
+     "predit": "NORMAL",
+     "categorie": "zone_brulee"
+    },
+    {
+     "id": "cabuar_avant_060",
+     "vrai": "NORMAL",
+     "predit": "FEU",
+     "categorie": "avant_incendie"
+    },
+    {
+     "id": "cabuar_avant_067",
+     "vrai": "NORMAL",
+     "predit": "FEU",
+     "categorie": "avant_incendie"
+    }
+   ]
+  },
+  "test_sans_seuil": {
+   "INONDATION": {
+    "precision": 0.42424242424242425,
+    "rappel": 0.4,
+    "n": 35
+   },
+   "FEU": {
+    "precision": 0.1,
+    "rappel": 0.25,
+    "n": 4
+   },
+   "fausses_alertes": 0.5609756097560976,
+   "n_normaux": 41,
+   "f1_macro": 0.33872010342598574,
+   "exactitude": 0.4125,
+   "confusion": [
+    [
+     18,
+     17,
+     6
+    ],
+    [
+     18,
+     14,
+     3
+    ],
+    [
+     1,
+     2,
+     1
+    ]
+   ]
+  },
+  "test": {
+   "INONDATION": {
+    "precision": 0.6666666666666666,
+    "rappel": 0.17142857142857143,
+    "n": 35
+   },
+   "FEU": {
+    "precision": 0.0,
+    "rappel": 0.0,
+    "n": 4
+   },
+   "fausses_alertes": 0.12195121951219512,
+   "n_normaux": 41,
+   "f1_macro": 0.3090909090909091,
+   "exactitude": 0.525,
+   "confusion": [
+    [
+     36,
+     3,
+     2
+    ],
+    [
+     29,
+     6,
+     0
+    ],
+    [
+     4,
+     0,
+     0
+    ]
+   ],
+   "erreurs": [
+    {
+     "id": "Bolivia_129334",
+     "vrai": "INONDATION",
+     "predit": "NORMAL",
+     "categorie": "crue_evenement"
+    },
+    {
+     "id": "Bolivia_242570",
+     "vrai": "INONDATION",
+     "predit": "NORMAL",
+     "categorie": "crue_evenement"
+    },
+    {
+     "id": "Bolivia_290290",
+     "vrai": "INONDATION",
+     "predit": "NORMAL",
+     "categorie": "crue_evenement"
+    },
+    {
+     "id": "Bolivia_312675",
+     "vrai": "INONDATION",
+     "predit": "NORMAL",
+     "categorie": "crue_evenement"
+    },
+    {
+     "id": "Bolivia_314919",
+     "vrai": "INONDATION",
+     "predit": "NORMAL",
+     "categorie": "crue_evenement"
+    },
+    {
+     "id": "Bolivia_379434",
+     "vrai": "INONDATION",
+     "predit": "NORMAL",
+     "categorie": "crue_evenement"
+    },
+    {
+     "id": "Bolivia_432776",
+     "vrai": "INONDATION",
+     "predit": "NORMAL",
+     "categorie": "crue_evenement"
+    },
+    {
+     "id": "Bolivia_60373",
+     "vrai": "INONDATION",
+     "predit": "NORMAL",
+     "categorie": "crue_evenement"
+    },
+    {
+     "id": "Somalia_1068756",
+     "vrai": "INONDATION",
+     "predit": "NORMAL",
+     "categorie": "crue_evenement"
+    },
+    {
+     "id": "Somalia_1087508",
+     "vrai": "INONDATION",
+     "predit": "NORMAL",
+     "categorie": "crue_evenement"
+    },
+    {
+     "id": "Somalia_12849",
+     "vrai": "INONDATION",
+     "predit": "NORMAL",
+     "categorie": "crue_evenement"
+    },
+    {
+     "id": "Somalia_295782",
+     "vrai": "INONDATION",
+     "predit": "NORMAL",
+     "categorie": "crue_evenement"
+    },
+    {
+     "id": "Somalia_322855",
+     "vrai": "INONDATION",
+     "predit": "NORMAL",
+     "categorie": "crue_evenement"
+    },
+    {
+     "id": "Somalia_371421",
+     "vrai": "INONDATION",
+     "predit": "NORMAL",
+     "categorie": "crue_evenement"
+    },
+    {
+     "id": "Somalia_626316",
+     "vrai": "INONDATION",
+     "predit": "NORMAL",
+     "categorie": "crue_evenement"
+    },
+    {
+     "id": "Somalia_649376",
+     "vrai": "INONDATION",
+     "predit": "NORMAL",
+     "categorie": "crue_evenement"
+    },
+    {
+     "id": "Somalia_685158",
+     "vrai": "INONDATION",
+     "predit": "NORMAL",
+     "categorie": "crue_evenement"
+    },
+    {
+     "id": "Somalia_886726",
+     "vrai": "INONDATION",
+     "predit": "NORMAL",
+     "categorie": "crue_evenement"
+    },
+    {
+     "id": "Somalia_94102",
+     "vrai": "INONDATION",
+     "predit": "NORMAL",
+     "categorie": "crue_evenement"
+    },
+    {
+     "id": "Somalia_970508",
+     "vrai": "INONDATION",
+     "predit": "NORMAL",
+     "categorie": "crue_evenement"
+    },
+    {
+     "id": "Somalia_992457",
+     "vrai": "INONDATION",
+     "predit": "NORMAL",
+     "categorie": "crue_evenement"
+    },
+    {
+     "id": "Sri-Lanka_14484",
+     "vrai": "INONDATION",
+     "predit": "NORMAL",
+     "categorie": "crue_evenement"
+    },
+    {
+     "id": "Sri-Lanka_236030",
+     "vrai": "NORMAL",
+     "predit": "INONDATION",
+     "categorie": "normal_pendant_crue"
+    },
+    {
+     "id": "Sri-Lanka_321316",
+     "vrai": "INONDATION",
+     "predit": "NORMAL",
+     "categorie": "crue_evenement"
+    },
+    {
+     "id": "Sri-Lanka_523539",
+     "vrai": "INONDATION",
+     "predit": "NORMAL",
+     "categorie": "crue_evenement"
+    },
+    {
+     "id": "Sri-Lanka_534068",
+     "vrai": "NORMAL",
+     "predit": "FEU",
+     "categorie": "normal_eau_permanente"
+    },
+    {
+     "id": "Sri-Lanka_551926",
+     "vrai": "INONDATION",
+     "predit": "NORMAL",
+     "categorie": "crue_evenement"
+    },
+    {
+     "id": "Sri-Lanka_579082",
+     "vrai": "INONDATION",
+     "predit": "NORMAL",
+     "categorie": "crue_evenement"
+    },
+    {
+     "id": "Sri-Lanka_63307",
+     "vrai": "INONDATION",
+     "predit": "NORMAL",
+     "categorie": "crue_evenement"
+    },
+    {
+     "id": "Sri-Lanka_847275",
+     "vrai": "INONDATION",
+     "predit": "NORMAL",
+     "categorie": "crue_evenement"
+    },
+    {
+     "id": "Sri-Lanka_916628",
+     "vrai": "INONDATION",
+     "predit": "NORMAL",
+     "categorie": "crue_evenement"
+    },
+    {
+     "id": "sec_Bolivia_129334",
+     "vrai": "NORMAL",
+     "predit": "INONDATION",
+     "categorie": "hors_crue_meme_lieu"
+    },
+    {
+     "id": "sec_Bolivia_314919",
+     "vrai": "NORMAL",
+     "predit": "INONDATION",
+     "categorie": "hors_crue_meme_lieu"
+    },
+    {
+     "id": "neg_aeroport_dubai",
+     "vrai": "NORMAL",
+     "predit": "FEU",
+     "categorie": "surface_lisse"
+    },
+    {
+     "id": "feu_evia_2021",
+     "vrai": "FEU",
+     "predit": "NORMAL",
+     "categorie": "zone_brulee"
+    },
+    {
+     "id": "feu_kangaroo_island_2020",
+     "vrai": "FEU",
+     "predit": "NORMAL",
+     "categorie": "zone_brulee"
+    },
+    {
+     "id": "feu_blue_mountains_2020",
+     "vrai": "FEU",
+     "predit": "NORMAL",
+     "categorie": "zone_brulee"
+    },
+    {
+     "id": "feu_sardaigne_2021",
+     "vrai": "FEU",
+     "predit": "NORMAL",
+     "categorie": "zone_brulee"
+    }
+   ]
+  },
+  "inconnu": {
+   "methode": "Mahalanobis (caractéristiques internes)",
+   "seuil": 249.26321976665668,
+   "auroc_test": 0.819578313253012,
+   "auroc_energie_test": 0.055421686746987976,
+   "connus_test_gardes": 0.6125,
+   "inconnus_signales": 0.7469879518072289,
+   "par_source": {
+    "scène : glacier": 1.0,
+    "scène : lave_volcan": 0.0,
+    "scène : mine_ciel_ouvert": 1.0,
+    "synthétique : bandes_melangees": 1.0,
+    "synthétique : bruit_aleatoire": 1.0,
+    "synthétique : image_constante": 0.0,
+    "synthétique : nuage_total_sans_s1": 1.0
+   }
+  },
+  "embarque": {
+   "fp32": {
+    "taille_mo": 0.746,
+    "ms_par_image_1coeur": 5.06,
+    "test": {
+     "INONDATION": {
+      "precision": 0.42424242424242425,
+      "rappel": 0.4,
+      "n": 35
+     },
+     "FEU": {
+      "precision": 0.1,
+      "rappel": 0.25,
+      "n": 4
+     },
+     "fausses_alertes": 0.5609756097560976,
+     "n_normaux": 41,
+     "f1_macro": 0.33872010342598574,
+     "exactitude": 0.4125,
+     "confusion": [
+      [
+       18,
+       17,
+       6
+      ],
+      [
+       18,
+       14,
+       3
+      ],
+      [
+       1,
+       2,
+       1
+      ]
+     ]
+    }
+   },
+   "int8": {
+    "taille_mo": 0.204,
+    "ms_par_image_1coeur": 3.29,
+    "test": {
+     "INONDATION": {
+      "precision": 0.42424242424242425,
+      "rappel": 0.4,
+      "n": 35
+     },
+     "FEU": {
+      "precision": 0.0,
+      "rappel": 0.0,
+      "n": 4
+     },
+     "fausses_alertes": 0.5609756097560976,
+     "n_normaux": 41,
+     "f1_macro": 0.28915363613799955,
+     "exactitude": 0.4,
+     "confusion": [
+      [
+       18,
+       17,
+       6
+      ],
+      [
+       18,
+       14,
+       3
+      ],
+      [
+       2,
+       2,
+       0
+      ]
+     ]
+    }
+   }
+  }
+ },
+ "cnn_complet": {
+  "modele": "cnn_complet",
+  "entree": "complet",
+  "parametres": 189667,
+  "seuil_alerte": 0.85,
+  "val_sans_seuil": {
+   "INONDATION": {
+    "precision": 0.84375,
+    "rappel": 0.9310344827586207,
+    "n": 29
+   },
+   "FEU": {
+    "precision": 0.6923076923076923,
+    "rappel": 1.0,
+    "n": 27
+   },
+   "fausses_alertes": 0.5151515151515151,
+   "n_normaux": 33,
+   "f1_macro": 0.7769595667377732,
+   "exactitude": 0.7865168539325843,
+   "confusion": [
+    [
+     16,
+     5,
+     12
+    ],
+    [
+     2,
+     27,
+     0
+    ],
+    [
+     0,
+     0,
+     27
+    ]
+   ]
+  },
+  "val": {
+   "INONDATION": {
+    "precision": 1.0,
+    "rappel": 0.5862068965517241,
+    "n": 29
+   },
+   "FEU": {
+    "precision": 0.75,
+    "rappel": 0.8888888888888888,
+    "n": 27
+   },
+   "fausses_alertes": 0.24242424242424243,
+   "n_normaux": 33,
+   "f1_macro": 0.7458737545552739,
+   "exactitude": 0.7415730337078652,
+   "confusion": [
+    [
+     25,
+     0,
+     8
+    ],
+    [
+     12,
+     17,
+     0
+    ],
+    [
+     3,
+     0,
+     24
+    ]
+   ],
+   "erreurs": [
+    {
+     "id": "Mekong_1282475",
+     "vrai": "INONDATION",
+     "predit": "NORMAL",
+     "categorie": "crue_evenement"
+    },
+    {
+     "id": "Mekong_1395593",
+     "vrai": "INONDATION",
+     "predit": "NORMAL",
+     "categorie": "crue_evenement"
+    },
+    {
+     "id": "Mekong_16233",
+     "vrai": "INONDATION",
+     "predit": "NORMAL",
+     "categorie": "crue_evenement"
+    },
+    {
+     "id": "Mekong_342411",
+     "vrai": "INONDATION",
+     "predit": "NORMAL",
+     "categorie": "crue_evenement"
+    },
+    {
+     "id": "Mekong_382276",
+     "vrai": "INONDATION",
+     "predit": "NORMAL",
+     "categorie": "crue_evenement"
+    },
+    {
+     "id": "Mekong_846007",
+     "vrai": "INONDATION",
+     "predit": "NORMAL",
+     "categorie": "crue_evenement"
+    },
+    {
+     "id": "Spain_1199913",
+     "vrai": "INONDATION",
+     "predit": "NORMAL",
+     "categorie": "crue_evenement"
+    },
+    {
+     "id": "Spain_337094",
+     "vrai": "INONDATION",
+     "predit": "NORMAL",
+     "categorie": "crue_evenement"
+    },
+    {
+     "id": "Spain_5650136",
+     "vrai": "INONDATION",
+     "predit": "NORMAL",
+     "categorie": "crue_evenement"
+    },
+    {
+     "id": "Spain_7856615",
+     "vrai": "INONDATION",
+     "predit": "NORMAL",
+     "categorie": "crue_evenement"
+    },
+    {
+     "id": "Spain_8199661",
+     "vrai": "INONDATION",
+     "predit": "NORMAL",
+     "categorie": "crue_evenement"
+    },
+    {
+     "id": "Spain_8565131",
+     "vrai": "INONDATION",
+     "predit": "NORMAL",
+     "categorie": "crue_evenement"
+    },
+    {
+     "id": "feu_pedrogao_2017",
+     "vrai": "FEU",
+     "predit": "NORMAL",
+     "categorie": "zone_brulee"
+    },
+    {
+     "id": "cabuar_011",
+     "vrai": "FEU",
+     "predit": "NORMAL",
+     "categorie": "zone_brulee"
+    },
+    {
+     "id": "cabuar_avant_030",
+     "vrai": "NORMAL",
+     "predit": "FEU",
+     "categorie": "avant_incendie"
+    },
+    {
+     "id": "cabuar_avant_034",
+     "vrai": "NORMAL",
+     "predit": "FEU",
+     "categorie": "avant_incendie"
+    },
+    {
+     "id": "cabuar_avant_039",
+     "vrai": "NORMAL",
+     "predit": "FEU",
+     "categorie": "avant_incendie"
+    },
+    {
+     "id": "cabuar_avant_044",
+     "vrai": "NORMAL",
+     "predit": "FEU",
+     "categorie": "avant_incendie"
+    },
+    {
+     "id": "cabuar_avant_046",
+     "vrai": "NORMAL",
+     "predit": "FEU",
+     "categorie": "avant_incendie"
+    },
+    {
+     "id": "cabuar_047",
+     "vrai": "FEU",
+     "predit": "NORMAL",
+     "categorie": "zone_brulee"
+    },
+    {
+     "id": "cabuar_avant_054",
+     "vrai": "NORMAL",
+     "predit": "FEU",
+     "categorie": "avant_incendie"
+    },
+    {
+     "id": "cabuar_avant_060",
+     "vrai": "NORMAL",
+     "predit": "FEU",
+     "categorie": "avant_incendie"
+    },
+    {
+     "id": "cabuar_avant_067",
+     "vrai": "NORMAL",
+     "predit": "FEU",
+     "categorie": "avant_incendie"
+    }
+   ]
+  },
+  "test_sans_seuil": {
+   "INONDATION": {
+    "precision": 0.6086956521739131,
+    "rappel": 0.8,
+    "n": 35
+   },
+   "FEU": {
+    "precision": 0.2,
+    "rappel": 0.5,
+    "n": 4
+   },
+   "fausses_alertes": 0.5609756097560976,
+   "n_normaux": 41,
+   "f1_macro": 0.5103061547505993,
+   "exactitude": 0.6,
+   "confusion": [
+    [
+     18,
+     18,
+     5
+    ],
+    [
+     4,
+     28,
+     3
+    ],
+    [
+     2,
+     0,
+     2
+    ]
+   ]
+  },
+  "test": {
+   "INONDATION": {
+    "precision": 0.9545454545454546,
+    "rappel": 0.6,
+    "n": 35
+   },
+   "FEU": {
+    "precision": 0.3333333333333333,
+    "rappel": 0.25,
+    "n": 4
+   },
+   "fausses_alertes": 0.04878048780487805,
+   "n_normaux": 41,
+   "f1_macro": 0.6116854636591479,
+   "exactitude": 0.7625,
+   "confusion": [
+    [
+     39,
+     1,
+     1
+    ],
+    [
+     13,
+     21,
+     1
+    ],
+    [
+     3,
+     0,
+     1
+    ]
+   ],
+   "erreurs": [
+    {
+     "id": "Bolivia_129334",
+     "vrai": "INONDATION",
+     "predit": "FEU",
+     "categorie": "crue_evenement"
+    },
+    {
+     "id": "Bolivia_242570",
+     "vrai": "INONDATION",
+     "predit": "NORMAL",
+     "categorie": "crue_evenement"
+    },
+    {
+     "id": "Bolivia_290290",
+     "vrai": "INONDATION",
+     "predit": "NORMAL",
+     "categorie": "crue_evenement"
+    },
+    {
+     "id": "Bolivia_314919",
+     "vrai": "INONDATION",
+     "predit": "NORMAL",
+     "categorie": "crue_evenement"
+    },
+    {
+     "id": "Bolivia_432776",
+     "vrai": "INONDATION",
+     "predit": "NORMAL",
+     "categorie": "crue_evenement"
+    },
+    {
+     "id": "Somalia_230192",
+     "vrai": "NORMAL",
+     "predit": "INONDATION",
+     "categorie": "normal_pendant_crue"
+    },
+    {
+     "id": "Somalia_626316",
+     "vrai": "INONDATION",
+     "predit": "NORMAL",
+     "categorie": "crue_evenement"
+    },
+    {
+     "id": "Somalia_94102",
+     "vrai": "INONDATION",
+     "predit": "NORMAL",
+     "categorie": "crue_evenement"
+    },
+    {
+     "id": "Somalia_992457",
+     "vrai": "INONDATION",
+     "predit": "NORMAL",
+     "categorie": "crue_evenement"
+    },
+    {
+     "id": "Sri-Lanka_132922",
+     "vrai": "INONDATION",
+     "predit": "NORMAL",
+     "categorie": "crue_evenement"
+    },
+    {
+     "id": "Sri-Lanka_321316",
+     "vrai": "INONDATION",
+     "predit": "NORMAL",
+     "categorie": "crue_evenement"
+    },
+    {
+     "id": "Sri-Lanka_551926",
+     "vrai": "INONDATION",
+     "predit": "NORMAL",
+     "categorie": "crue_evenement"
+    },
+    {
+     "id": "Sri-Lanka_579082",
+     "vrai": "INONDATION",
+     "predit": "NORMAL",
+     "categorie": "crue_evenement"
+    },
+    {
+     "id": "Sri-Lanka_63307",
+     "vrai": "INONDATION",
+     "predit": "NORMAL",
+     "categorie": "crue_evenement"
+    },
+    {
+     "id": "Sri-Lanka_845821",
+     "vrai": "NORMAL",
+     "predit": "FEU",
+     "categorie": "normal_eau_permanente"
+    },
+    {
+     "id": "Sri-Lanka_883641",
+     "vrai": "INONDATION",
+     "predit": "NORMAL",
+     "categorie": "crue_evenement"
+    },
+    {
+     "id": "feu_evia_2021",
+     "vrai": "FEU",
+     "predit": "NORMAL",
+     "categorie": "zone_brulee"
+    },
+    {
+     "id": "feu_blue_mountains_2020",
+     "vrai": "FEU",
+     "predit": "NORMAL",
+     "categorie": "zone_brulee"
+    },
+    {
+     "id": "feu_sardaigne_2021",
+     "vrai": "FEU",
+     "predit": "NORMAL",
+     "categorie": "zone_brulee"
+    }
+   ]
+  },
+  "inconnu": {
+   "methode": "Mahalanobis (caractéristiques internes)",
+   "seuil": 336.50369608869175,
+   "auroc_test": 0.9995535714285715,
+   "auroc_energie_test": 0.2193452380952381,
+   "connus_test_gardes": 0.875,
+   "inconnus_signales": 1.0,
+   "par_source": {
+    "scène : glacier": 1.0,
+    "scène : lave_volcan": 1.0,
+    "scène : mine_ciel_ouvert": 1.0,
+    "scène : salar": 1.0,
+    "synthétique : bandes_melangees": 1.0,
+    "synthétique : bruit_aleatoire": 1.0,
+    "synthétique : image_constante": 1.0,
+    "synthétique : nuage_total_sans_s1": 1.0
+   }
+  },
+  "eau_permanente_radar_seul": {
+   "n": 814,
+   "fausses_alertes": 0.0,
+   "alertes_inondation": 0.0,
+   "alertes_feu": 0.0
+  },
+  "embarque": {
+   "fp32": {
+    "taille_mo": 0.76,
+    "ms_par_image_1coeur": 7.89,
+    "test": {
+     "INONDATION": {
+      "precision": 0.6086956521739131,
+      "rappel": 0.8,
+      "n": 35
+     },
+     "FEU": {
+      "precision": 0.2,
+      "rappel": 0.5,
+      "n": 4
+     },
+     "fausses_alertes": 0.5609756097560976,
+     "n_normaux": 41,
+     "f1_macro": 0.5103061547505993,
+     "exactitude": 0.6,
+     "confusion": [
+      [
+       18,
+       18,
+       5
+      ],
+      [
+       4,
+       28,
+       3
+      ],
+      [
+       2,
+       0,
+       2
+      ]
+     ]
+    }
+   },
+   "int8": {
+    "taille_mo": 0.207,
+    "ms_par_image_1coeur": 4.84,
+    "test": {
+     "INONDATION": {
+      "precision": 0.6086956521739131,
+      "rappel": 0.8,
+      "n": 35
+     },
+     "FEU": {
+      "precision": 0.2222222222222222,
+      "rappel": 0.5,
+      "n": 4
+     },
+     "fausses_alertes": 0.5365853658536586,
+     "n_normaux": 41,
+     "f1_macro": 0.5249359693804139,
+     "exactitude": 0.6125,
+     "confusion": [
+      [
+       19,
+       18,
+       4
+      ],
+      [
+       4,
+       28,
+       3
+      ],
+      [
+       2,
+       0,
+       2
+      ]
+     ]
+    }
+   }
+  }
+ },
+ "mobilenet_rgb": {
+  "modele": "mobilenet_rgb",
+  "entree": "imagenet",
+  "parametres": 1520931,
+  "seuil_alerte": 0.5,
+  "val_sans_seuil": {
+   "INONDATION": {
+    "precision": 0.9375,
+    "rappel": 0.5172413793103449,
+    "n": 29
+   },
+   "FEU": {
+    "precision": 0.75,
+    "rappel": 0.7777777777777778,
+    "n": 27
+   },
+   "fausses_alertes": 0.21212121212121213,
+   "n_normaux": 33,
+   "f1_macro": 0.698989898989899,
+   "exactitude": 0.6966292134831461,
+   "confusion": [
+    [
+     26,
+     1,
+     6
+    ],
+    [
+     13,
+     15,
+     1
+    ],
+    [
+     6,
+     0,
+     21
+    ]
+   ]
+  },
+  "val": {
+   "INONDATION": {
+    "precision": 0.9333333333333333,
+    "rappel": 0.4827586206896552,
+    "n": 29
+   },
+   "FEU": {
+    "precision": 0.75,
+    "rappel": 0.7777777777777778,
+    "n": 27
+   },
+   "fausses_alertes": 0.21212121212121213,
+   "n_normaux": 33,
+   "f1_macro": 0.6860759493670886,
+   "exactitude": 0.6853932584269663,
+   "confusion": [
+    [
+     26,
+     1,
+     6
+    ],
+    [
+     14,
+     14,
+     1
+    ],
+    [
+     6,
+     0,
+     21
+    ]
+   ],
+   "erreurs": [
+    {
+     "id": "Mekong_1248200",
+     "vrai": "INONDATION",
+     "predit": "NORMAL",
+     "categorie": "crue_evenement"
+    },
+    {
+     "id": "Mekong_1443339",
+     "vrai": "INONDATION",
+     "predit": "NORMAL",
+     "categorie": "crue_evenement"
+    },
+    {
+     "id": "Mekong_213094",
+     "vrai": "NORMAL",
+     "predit": "INONDATION",
+     "categorie": "normal_pendant_crue"
+    },
+    {
+     "id": "Mekong_52610",
+     "vrai": "INONDATION",
+     "predit": "NORMAL",
+     "categorie": "crue_evenement"
+    },
+    {
+     "id": "Mekong_846007",
+     "vrai": "INONDATION",
+     "predit": "NORMAL",
+     "categorie": "crue_evenement"
+    },
+    {
+     "id": "Mekong_98310",
+     "vrai": "INONDATION",
+     "predit": "NORMAL",
+     "categorie": "crue_evenement"
+    },
+    {
+     "id": "Spain_1167260",
+     "vrai": "INONDATION",
+     "predit": "NORMAL",
+     "categorie": "crue_evenement"
+    },
+    {
+     "id": "Spain_1199913",
+     "vrai": "INONDATION",
+     "predit": "NORMAL",
+     "categorie": "crue_evenement"
+    },
+    {
+     "id": "Spain_2594119",
+     "vrai": "NORMAL",
+     "predit": "FEU",
+     "categorie": "normal_pendant_crue"
+    },
+    {
+     "id": "Spain_337094",
+     "vrai": "INONDATION",
+     "predit": "NORMAL",
+     "categorie": "crue_evenement"
+    },
+    {
+     "id": "Spain_6095801",
+     "vrai": "INONDATION",
+     "predit": "NORMAL",
+     "categorie": "crue_evenement"
+    },
+    {
+     "id": "Spain_716716",
+     "vrai": "NORMAL",
+     "predit": "FEU",
+     "categorie": "normal_pendant_crue"
+    },
+    {
+     "id": "Spain_7370579",
+     "vrai": "INONDATION",
+     "predit": "NORMAL",
+     "categorie": "crue_evenement"
+    },
+    {
+     "id": "Spain_7387658",
+     "vrai": "INONDATION",
+     "predit": "NORMAL",
+     "categorie": "crue_evenement"
+    },
+    {
+     "id": "Spain_7604243",
+     "vrai": "NORMAL",
+     "predit": "FEU",
+     "categorie": "normal_eau_permanente"
+    },
+    {
+     "id": "Spain_7856615",
+     "vrai": "INONDATION",
+     "predit": "FEU",
+     "categorie": "crue_evenement"
+    },
+    {
+     "id": "Spain_8199661",
+     "vrai": "INONDATION",
+     "predit": "NORMAL",
+     "categorie": "crue_evenement"
+    },
+    {
+     "id": "Spain_8372658",
+     "vrai": "INONDATION",
+     "predit": "NORMAL",
+     "categorie": "crue_evenement"
+    },
+    {
+     "id": "Spain_8565131",
+     "vrai": "INONDATION",
+     "predit": "NORMAL",
+     "categorie": "crue_evenement"
+    },
+    {
+     "id": "feu_pedrogao_2017",
+     "vrai": "FEU",
+     "predit": "NORMAL",
+     "categorie": "zone_brulee"
+    },
+    {
+     "id": "feu_leiria_2017",
+     "vrai": "FEU",
+     "predit": "NORMAL",
+     "categorie": "zone_brulee"
+    },
+    {
+     "id": "cabuar_008",
+     "vrai": "FEU",
+     "predit": "NORMAL",
+     "categorie": "zone_brulee"
+    },
+    {
+     "id": "cabuar_039",
+     "vrai": "FEU",
+     "predit": "NORMAL",
+     "categorie": "zone_brulee"
+    },
+    {
+     "id": "cabuar_avant_044",
+     "vrai": "NORMAL",
+     "predit": "FEU",
+     "categorie": "avant_incendie"
+    },
+    {
+     "id": "cabuar_avant_046",
+     "vrai": "NORMAL",
+     "predit": "FEU",
+     "categorie": "avant_incendie"
+    },
+    {
+     "id": "cabuar_047",
+     "vrai": "FEU",
+     "predit": "NORMAL",
+     "categorie": "zone_brulee"
+    },
+    {
+     "id": "cabuar_060",
+     "vrai": "FEU",
+     "predit": "NORMAL",
+     "categorie": "zone_brulee"
+    },
+    {
+     "id": "cabuar_avant_060",
+     "vrai": "NORMAL",
+     "predit": "FEU",
+     "categorie": "avant_incendie"
+    }
+   ]
+  },
+  "test_sans_seuil": {
+   "INONDATION": {
+    "precision": 0.4666666666666667,
+    "rappel": 0.2,
+    "n": 35
+   },
+   "FEU": {
+    "precision": 0.4,
+    "rappel": 0.5,
+    "n": 4
+   },
+   "fausses_alertes": 0.21951219512195122,
+   "n_normaux": 41,
+   "f1_macro": 0.4527026035936927,
+   "exactitude": 0.5125,
+   "confusion": [
+    [
+     32,
+     8,
+     1
+    ],
+    [
+     26,
+     7,
+     2
+    ],
+    [
+     2,
+     0,
+     2
+    ]
+   ]
+  },
+  "test": {
+   "INONDATION": {
+    "precision": 0.5,
+    "rappel": 0.2,
+    "n": 35
+   },
+   "FEU": {
+    "precision": 0.4,
+    "rappel": 0.5,
+    "n": 4
+   },
+   "fausses_alertes": 0.1951219512195122,
+   "n_normaux": 41,
+   "f1_macro": 0.4590725178960473,
+   "exactitude": 0.525,
+   "confusion": [
+    [
+     33,
+     7,
+     1
+    ],
+    [
+     26,
+     7,
+     2
+    ],
+    [
+     2,
+     0,
+     2
+    ]
+   ],
+   "erreurs": [
+    {
+     "id": "Bolivia_23014",
+     "vrai": "NORMAL",
+     "predit": "INONDATION",
+     "categorie": "normal_eau_permanente"
+    },
+    {
+     "id": "Bolivia_242570",
+     "vrai": "INONDATION",
+     "predit": "NORMAL",
+     "categorie": "crue_evenement"
+    },
+    {
+     "id": "Bolivia_312675",
+     "vrai": "INONDATION",
+     "predit": "NORMAL",
+     "categorie": "crue_evenement"
+    },
+    {
+     "id": "Bolivia_314919",
+     "vrai": "INONDATION",
+     "predit": "NORMAL",
+     "categorie": "crue_evenement"
+    },
+    {
+     "id": "Bolivia_379434",
+     "vrai": "INONDATION",
+     "predit": "NORMAL",
+     "categorie": "crue_evenement"
+    },
+    {
+     "id": "Bolivia_432776",
+     "vrai": "INONDATION",
+     "predit": "NORMAL",
+     "categorie": "crue_evenement"
+    },
+    {
+     "id": "Bolivia_60373",
+     "vrai": "INONDATION",
+     "predit": "NORMAL",
+     "categorie": "crue_evenement"
+    },
+    {
+     "id": "Somalia_1068756",
+     "vrai": "INONDATION",
+     "predit": "NORMAL",
+     "categorie": "crue_evenement"
+    },
+    {
+     "id": "Somalia_1087508",
+     "vrai": "INONDATION",
+     "predit": "NORMAL",
+     "categorie": "crue_evenement"
+    },
+    {
+     "id": "Somalia_12849",
+     "vrai": "INONDATION",
+     "predit": "NORMAL",
+     "categorie": "crue_evenement"
+    },
+    {
+     "id": "Somalia_371421",
+     "vrai": "INONDATION",
+     "predit": "NORMAL",
+     "categorie": "crue_evenement"
+    },
+    {
+     "id": "Somalia_626316",
+     "vrai": "INONDATION",
+     "predit": "NORMAL",
+     "categorie": "crue_evenement"
+    },
+    {
+     "id": "Somalia_685158",
+     "vrai": "INONDATION",
+     "predit": "NORMAL",
+     "categorie": "crue_evenement"
+    },
+    {
+     "id": "Somalia_7931",
+     "vrai": "NORMAL",
+     "predit": "INONDATION",
+     "categorie": "normal_pendant_crue"
+    },
+    {
+     "id": "Somalia_886726",
+     "vrai": "INONDATION",
+     "predit": "FEU",
+     "categorie": "crue_evenement"
+    },
+    {
+     "id": "Somalia_94102",
+     "vrai": "INONDATION",
+     "predit": "NORMAL",
+     "categorie": "crue_evenement"
+    },
+    {
+     "id": "Somalia_970508",
+     "vrai": "INONDATION",
+     "predit": "NORMAL",
+     "categorie": "crue_evenement"
+    },
+    {
+     "id": "Somalia_992457",
+     "vrai": "INONDATION",
+     "predit": "NORMAL",
+     "categorie": "crue_evenement"
+    },
+    {
+     "id": "Sri-Lanka_1038087",
+     "vrai": "INONDATION",
+     "predit": "NORMAL",
+     "categorie": "crue_evenement"
+    },
+    {
+     "id": "Sri-Lanka_132922",
+     "vrai": "INONDATION",
+     "predit": "NORMAL",
+     "categorie": "crue_evenement"
+    },
+    {
+     "id": "Sri-Lanka_14484",
+     "vrai": "INONDATION",
+     "predit": "NORMAL",
+     "categorie": "crue_evenement"
+    },
+    {
+     "id": "Sri-Lanka_178753",
+     "vrai": "NORMAL",
+     "predit": "INONDATION",
+     "categorie": "normal_pendant_crue"
+    },
+    {
+     "id": "Sri-Lanka_236030",
+     "vrai": "NORMAL",
+     "predit": "INONDATION",
+     "categorie": "normal_pendant_crue"
+    },
+    {
+     "id": "Sri-Lanka_249079",
+     "vrai": "NORMAL",
+     "predit": "INONDATION",
+     "categorie": "normal_nuageux"
+    },
+    {
+     "id": "Sri-Lanka_321316",
+     "vrai": "INONDATION",
+     "predit": "NORMAL",
+     "categorie": "crue_evenement"
+    },
+    {
+     "id": "Sri-Lanka_551926",
+     "vrai": "INONDATION",
+     "predit": "NORMAL",
+     "categorie": "crue_evenement"
+    },
+    {
+     "id": "Sri-Lanka_579082",
+     "vrai": "INONDATION",
+     "predit": "NORMAL",
+     "categorie": "crue_evenement"
+    },
+    {
+     "id": "Sri-Lanka_63307",
+     "vrai": "INONDATION",
+     "predit": "NORMAL",
+     "categorie": "crue_evenement"
+    },
+    {
+     "id": "Sri-Lanka_649970",
+     "vrai": "INONDATION",
+     "predit": "NORMAL",
+     "categorie": "crue_evenement"
+    },
+    {
+     "id": "Sri-Lanka_653336",
+     "vrai": "INONDATION",
+     "predit": "NORMAL",
+     "categorie": "crue_evenement"
+    },
+    {
+     "id": "Sri-Lanka_847275",
+     "vrai": "INONDATION",
+     "predit": "NORMAL",
+     "categorie": "crue_evenement"
+    },
+    {
+     "id": "Sri-Lanka_849649",
+     "vrai": "NORMAL",
+     "predit": "INONDATION",
+     "categorie": "normal_pendant_crue"
+    },
+    {
+     "id": "Sri-Lanka_883641",
+     "vrai": "INONDATION",
+     "predit": "FEU",
+     "categorie": "crue_evenement"
+    },
+    {
+     "id": "Sri-Lanka_916628",
+     "vrai": "INONDATION",
+     "predit": "NORMAL",
+     "categorie": "crue_evenement"
+    },
+    {
+     "id": "sec_Bolivia_129334",
+     "vrai": "NORMAL",
+     "predit": "INONDATION",
+     "categorie": "hors_crue_meme_lieu"
+    },
+    {
+     "id": "neg_aeroport_dubai",
+     "vrai": "NORMAL",
+     "predit": "FEU",
+     "categorie": "surface_lisse"
+    },
+    {
+     "id": "feu_kangaroo_island_2020",
+     "vrai": "FEU",
+     "predit": "NORMAL",
+     "categorie": "zone_brulee"
+    },
+    {
+     "id": "feu_blue_mountains_2020",
+     "vrai": "FEU",
+     "predit": "NORMAL",
+     "categorie": "zone_brulee"
+    }
+   ]
+  },
+  "inconnu": {
+   "methode": "Mahalanobis (caractéristiques internes)",
+   "seuil": 96447.77618371886,
+   "auroc_test": 0.5769578313253012,
+   "auroc_energie_test": 0.3789156626506024,
+   "connus_test_gardes": 0.8625,
+   "inconnus_signales": 0.3855421686746988,
+   "par_source": {
+    "scène : glacier": 0.0,
+    "scène : lave_volcan": 0.0,
+    "scène : mine_ciel_ouvert": 0.0,
+    "synthétique : bandes_melangees": 0.6,
+    "synthétique : bruit_aleatoire": 1.0,
+    "synthétique : image_constante": 0.0,
+    "synthétique : nuage_total_sans_s1": 0.0
+   }
+  },
+  "embarque": {
+   "fp32": {
+    "taille_mo": 6.094,
+    "ms_par_image_1coeur": 1.26,
+    "test": {
+     "INONDATION": {
+      "precision": 0.4666666666666667,
+      "rappel": 0.2,
+      "n": 35
+     },
+     "FEU": {
+      "precision": 0.4,
+      "rappel": 0.5,
+      "n": 4
+     },
+     "fausses_alertes": 0.21951219512195122,
+     "n_normaux": 41,
+     "f1_macro": 0.4527026035936927,
+     "exactitude": 0.5125,
+     "confusion": [
+      [
+       32,
+       8,
+       1
+      ],
+      [
+       26,
+       7,
+       2
+      ],
+      [
+       2,
+       0,
+       2
+      ]
+     ]
+    }
+   },
+   "int8": {
+    "taille_mo": 1.87,
+    "ms_par_image_1coeur": 1.73,
+    "test": {
+     "INONDATION": {
+      "precision": 0.0,
+      "rappel": 0.0,
+      "n": 35
+     },
+     "FEU": {
+      "precision": null,
+      "rappel": 0.0,
+      "n": 4
+     },
+     "fausses_alertes": 0.024390243902439025,
+     "n_normaux": 41,
+     "f1_macro": 0.22222222222222224,
+     "exactitude": 0.5,
+     "confusion": [
+      [
+       40,
+       1,
+       0
+      ],
+      [
+       35,
+       0,
+       0
+      ],
+      [
+       4,
+       0,
+       0
+      ]
+     ]
+    }
+   }
+  }
+ },
+ "clip_zero_shot": {
+  "modele": "clip_zero_shot",
+  "entree": "rgb",
+  "parametres": 151277313,
+  "val": {
+   "INONDATION": {
+    "precision": 0.46551724137931033,
+    "rappel": 0.9310344827586207,
+    "n": 29
+   },
+   "FEU": {
+    "precision": 0.5555555555555556,
+    "rappel": 0.37037037037037035,
+    "n": 27
+   },
+   "fausses_alertes": 0.7105263157894737,
+   "n_normaux": 38,
+   "f1_macro": 0.485997080824667,
+   "exactitude": 0.5106382978723404,
+   "confusion": [
+    [
+     11,
+     19,
+     8
+    ],
+    [
+     2,
+     27,
+     0
+    ],
+    [
+     5,
+     12,
+     10
+    ]
+   ]
+  },
+  "test": {
+   "INONDATION": {
+    "precision": 0.6060606060606061,
+    "rappel": 0.5714285714285714,
+    "n": 35
+   },
+   "FEU": {
+    "precision": 0.2,
+    "rappel": 0.75,
+    "n": 4
+   },
+   "fausses_alertes": 0.5121951219512195,
+   "n_normaux": 41,
+   "f1_macro": 0.4839899910937699,
+   "exactitude": 0.5375,
+   "confusion": [
+    [
+     20,
+     13,
+     8
+    ],
+    [
+     11,
+     20,
+     4
+    ],
+    [
+     1,
+     0,
+     3
+    ]
+   ]
+  },
+  "embarque": {
+   "fp32": {
+    "taille_mo": 605.1,
+    "ms_par_image_1coeur": null,
+    "ms_par_image_cpu": 148.2
+   }
+  }
+ },
+ "yolo_rgb": {
+  "modele": "yolo_rgb",
+  "entree": "rgb",
+  "parametres": 3138246,
+  "seuil_confiance": 0.2,
+  "val": {
+   "INONDATION": {
+    "precision": 0.8181818181818182,
+    "rappel": 0.3103448275862069,
+    "n": 29
+   },
+   "FEU": {
+    "precision": 0.7333333333333333,
+    "rappel": 0.8148148148148148,
+    "n": 27
+   },
+   "fausses_alertes": 0.2631578947368421,
+   "n_normaux": 38,
+   "f1_macro": 0.612438146648673,
+   "exactitude": 0.6276595744680851,
+   "confusion": [
+    [
+     28,
+     2,
+     8
+    ],
+    [
+     20,
+     9,
+     0
+    ],
+    [
+     5,
+     0,
+     22
+    ]
+   ],
+   "erreurs": [
+    {
+     "id": "Mekong_1149855",
+     "vrai": "INONDATION",
+     "predit": "NORMAL",
+     "categorie": "crue_evenement"
+    },
+    {
+     "id": "Mekong_1282475",
+     "vrai": "INONDATION",
+     "predit": "NORMAL",
+     "categorie": "crue_evenement"
+    },
+    {
+     "id": "Mekong_1395593",
+     "vrai": "INONDATION",
+     "predit": "NORMAL",
+     "categorie": "crue_evenement"
+    },
+    {
+     "id": "Mekong_16233",
+     "vrai": "INONDATION",
+     "predit": "NORMAL",
+     "categorie": "crue_evenement"
+    },
+    {
+     "id": "Mekong_254910",
+     "vrai": "NORMAL",
+     "predit": "INONDATION",
+     "categorie": "normal_pendant_crue"
+    },
+    {
+     "id": "Mekong_293769",
+     "vrai": "INONDATION",
+     "predit": "NORMAL",
+     "categorie": "crue_evenement"
+    },
+    {
+     "id": "Mekong_342411",
+     "vrai": "INONDATION",
+     "predit": "NORMAL",
+     "categorie": "crue_evenement"
+    },
+    {
+     "id": "Mekong_382276",
+     "vrai": "INONDATION",
+     "predit": "NORMAL",
+     "categorie": "crue_evenement"
+    },
+    {
+     "id": "Mekong_596495",
+     "vrai": "INONDATION",
+     "predit": "NORMAL",
+     "categorie": "crue_evenement"
+    },
+    {
+     "id": "Mekong_774566",
+     "vrai": "INONDATION",
+     "predit": "NORMAL",
+     "categorie": "crue_evenement"
+    },
+    {
+     "id": "Mekong_98310",
+     "vrai": "INONDATION",
+     "predit": "NORMAL",
+     "categorie": "crue_evenement"
+    },
+    {
+     "id": "Spain_1167260",
+     "vrai": "INONDATION",
+     "predit": "NORMAL",
+     "categorie": "crue_evenement"
+    },
+    {
+     "id": "Spain_1199913",
+     "vrai": "INONDATION",
+     "predit": "NORMAL",
+     "categorie": "crue_evenement"
+    },
+    {
+     "id": "Spain_337094",
+     "vrai": "INONDATION",
+     "predit": "NORMAL",
+     "categorie": "crue_evenement"
+    },
+    {
+     "id": "Spain_6095801",
+     "vrai": "INONDATION",
+     "predit": "NORMAL",
+     "categorie": "crue_evenement"
+    },
+    {
+     "id": "Spain_7370579",
+     "vrai": "INONDATION",
+     "predit": "NORMAL",
+     "categorie": "crue_evenement"
+    },
+    {
+     "id": "Spain_7387658",
+     "vrai": "INONDATION",
+     "predit": "NORMAL",
+     "categorie": "crue_evenement"
+    },
+    {
+     "id": "Spain_7856615",
+     "vrai": "INONDATION",
+     "predit": "NORMAL",
+     "categorie": "crue_evenement"
+    },
+    {
+     "id": "Spain_8199661",
+     "vrai": "INONDATION",
+     "predit": "NORMAL",
+     "categorie": "crue_evenement"
+    },
+    {
+     "id": "Spain_8372658",
+     "vrai": "INONDATION",
+     "predit": "NORMAL",
+     "categorie": "crue_evenement"
+    },
+    {
+     "id": "Spain_8565131",
+     "vrai": "INONDATION",
+     "predit": "NORMAL",
+     "categorie": "crue_evenement"
+    },
+    {
+     "id": "sec_Spain_4282030",
+     "vrai": "NORMAL",
+     "predit": "INONDATION",
+     "categorie": "hors_crue_meme_lieu"
+    },
+    {
+     "id": "feu_leiria_2017",
+     "vrai": "FEU",
+     "predit": "NORMAL",
+     "categorie": "zone_brulee"
+    },
+    {
+     "id": "cabuar_011",
+     "vrai": "FEU",
+     "predit": "NORMAL",
+     "categorie": "zone_brulee"
+    },
+    {
+     "id": "cabuar_avant_028",
+     "vrai": "NORMAL",
+     "predit": "FEU",
+     "categorie": "avant_incendie"
+    },
+    {
+     "id": "cabuar_avant_030",
+     "vrai": "NORMAL",
+     "predit": "FEU",
+     "categorie": "avant_incendie"
+    },
+    {
+     "id": "cabuar_avant_034",
+     "vrai": "NORMAL",
+     "predit": "FEU",
+     "categorie": "avant_incendie"
+    },
+    {
+     "id": "cabuar_avant_039",
+     "vrai": "NORMAL",
+     "predit": "FEU",
+     "categorie": "avant_incendie"
+    },
+    {
+     "id": "cabuar_avant_044",
+     "vrai": "NORMAL",
+     "predit": "FEU",
+     "categorie": "avant_incendie"
+    },
+    {
+     "id": "cabuar_avant_046",
+     "vrai": "NORMAL",
+     "predit": "FEU",
+     "categorie": "avant_incendie"
+    },
+    {
+     "id": "cabuar_avant_054",
+     "vrai": "NORMAL",
+     "predit": "FEU",
+     "categorie": "avant_incendie"
+    },
+    {
+     "id": "cabuar_055",
+     "vrai": "FEU",
+     "predit": "NORMAL",
+     "categorie": "zone_brulee"
+    },
+    {
+     "id": "cabuar_060",
+     "vrai": "FEU",
+     "predit": "NORMAL",
+     "categorie": "zone_brulee"
+    },
+    {
+     "id": "cabuar_avant_060",
+     "vrai": "NORMAL",
+     "predit": "FEU",
+     "categorie": "avant_incendie"
+    },
+    {
+     "id": "cabuar_073",
+     "vrai": "FEU",
+     "predit": "NORMAL",
+     "categorie": "zone_brulee"
+    }
+   ]
+  },
+  "test": {
+   "INONDATION": {
+    "precision": 0.64,
+    "rappel": 0.45714285714285713,
+    "n": 35
+   },
+   "FEU": {
+    "precision": 0.4,
+    "rappel": 0.5,
+    "n": 4
+   },
+   "fausses_alertes": 0.2926829268292683,
+   "n_normaux": 41,
+   "f1_macro": 0.5383801383801384,
+   "exactitude": 0.5875,
+   "confusion": [
+    [
+     29,
+     9,
+     3
+    ],
+    [
+     19,
+     16,
+     0
+    ],
+    [
+     2,
+     0,
+     2
+    ]
+   ],
+   "erreurs": [
+    {
+     "id": "Bolivia_290290",
+     "vrai": "INONDATION",
+     "predit": "NORMAL",
+     "categorie": "crue_evenement"
+    },
+    {
+     "id": "Bolivia_312675",
+     "vrai": "INONDATION",
+     "predit": "NORMAL",
+     "categorie": "crue_evenement"
+    },
+    {
+     "id": "Bolivia_314919",
+     "vrai": "INONDATION",
+     "predit": "NORMAL",
+     "categorie": "crue_evenement"
+    },
+    {
+     "id": "Bolivia_432776",
+     "vrai": "INONDATION",
+     "predit": "NORMAL",
+     "categorie": "crue_evenement"
+    },
+    {
+     "id": "Somalia_1068756",
+     "vrai": "INONDATION",
+     "predit": "NORMAL",
+     "categorie": "crue_evenement"
+    },
+    {
+     "id": "Somalia_371421",
+     "vrai": "INONDATION",
+     "predit": "NORMAL",
+     "categorie": "crue_evenement"
+    },
+    {
+     "id": "Somalia_60129",
+     "vrai": "NORMAL",
+     "predit": "INONDATION",
+     "categorie": "normal_pendant_crue"
+    },
+    {
+     "id": "Somalia_626316",
+     "vrai": "INONDATION",
+     "predit": "NORMAL",
+     "categorie": "crue_evenement"
+    },
+    {
+     "id": "Somalia_649376",
+     "vrai": "INONDATION",
+     "predit": "NORMAL",
+     "categorie": "crue_evenement"
+    },
+    {
+     "id": "Somalia_7931",
+     "vrai": "NORMAL",
+     "predit": "INONDATION",
+     "categorie": "normal_pendant_crue"
+    },
+    {
+     "id": "Somalia_886726",
+     "vrai": "INONDATION",
+     "predit": "NORMAL",
+     "categorie": "crue_evenement"
+    },
+    {
+     "id": "Somalia_992457",
+     "vrai": "INONDATION",
+     "predit": "NORMAL",
+     "categorie": "crue_evenement"
+    },
+    {
+     "id": "Sri-Lanka_1038087",
+     "vrai": "INONDATION",
+     "predit": "NORMAL",
+     "categorie": "crue_evenement"
+    },
+    {
+     "id": "Sri-Lanka_135713",
+     "vrai": "NORMAL",
+     "predit": "INONDATION",
+     "categorie": "normal_nuageux"
+    },
+    {
+     "id": "Sri-Lanka_236030",
+     "vrai": "NORMAL",
+     "predit": "INONDATION",
+     "categorie": "normal_pendant_crue"
+    },
+    {
+     "id": "Sri-Lanka_321316",
+     "vrai": "INONDATION",
+     "predit": "NORMAL",
+     "categorie": "crue_evenement"
+    },
+    {
+     "id": "Sri-Lanka_400518",
+     "vrai": "NORMAL",
+     "predit": "INONDATION",
+     "categorie": "normal_pendant_crue"
+    },
+    {
+     "id": "Sri-Lanka_523539",
+     "vrai": "INONDATION",
+     "predit": "NORMAL",
+     "categorie": "crue_evenement"
+    },
+    {
+     "id": "Sri-Lanka_534068",
+     "vrai": "NORMAL",
+     "predit": "INONDATION",
+     "categorie": "normal_eau_permanente"
+    },
+    {
+     "id": "Sri-Lanka_551926",
+     "vrai": "INONDATION",
+     "predit": "NORMAL",
+     "categorie": "crue_evenement"
+    },
+    {
+     "id": "Sri-Lanka_63307",
+     "vrai": "INONDATION",
+     "predit": "NORMAL",
+     "categorie": "crue_evenement"
+    },
+    {
+     "id": "Sri-Lanka_653336",
+     "vrai": "INONDATION",
+     "predit": "NORMAL",
+     "categorie": "crue_evenement"
+    },
+    {
+     "id": "Sri-Lanka_849649",
+     "vrai": "NORMAL",
+     "predit": "INONDATION",
+     "categorie": "normal_pendant_crue"
+    },
+    {
+     "id": "Sri-Lanka_883641",
+     "vrai": "INONDATION",
+     "predit": "NORMAL",
+     "categorie": "crue_evenement"
+    },
+    {
+     "id": "Sri-Lanka_916628",
+     "vrai": "INONDATION",
+     "predit": "NORMAL",
+     "categorie": "crue_evenement"
+    },
+    {
+     "id": "Sri-Lanka_922192",
+     "vrai": "NORMAL",
+     "predit": "INONDATION",
+     "categorie": "normal_pendant_crue"
+    },
+    {
+     "id": "Sri-Lanka_92824",
+     "vrai": "INONDATION",
+     "predit": "NORMAL",
+     "categorie": "crue_evenement"
+    },
+    {
+     "id": "sec_Bolivia_432776",
+     "vrai": "NORMAL",
+     "predit": "INONDATION",
+     "categorie": "hors_crue_meme_lieu"
+    },
+    {
+     "id": "sec_Sri-Lanka_92824",
+     "vrai": "NORMAL",
+     "predit": "FEU",
+     "categorie": "hors_crue_meme_lieu"
+    },
+    {
+     "id": "sec_Sri-Lanka_14484",
+     "vrai": "NORMAL",
+     "predit": "FEU",
+     "categorie": "hors_crue_meme_lieu"
+    },
+    {
+     "id": "neg_aeroport_dubai",
+     "vrai": "NORMAL",
+     "predit": "FEU",
+     "categorie": "surface_lisse"
+    },
+    {
+     "id": "feu_kangaroo_island_2020",
+     "vrai": "FEU",
+     "predit": "NORMAL",
+     "categorie": "zone_brulee"
+    },
+    {
+     "id": "feu_sardaigne_2021",
+     "vrai": "FEU",
+     "predit": "NORMAL",
+     "categorie": "zone_brulee"
+    }
+   ]
+  },
+  "embarque": {
+   "fp32": {
+    "taille_mo": 12.61,
+    "ms_par_image_1coeur": 40.2
+   }
+  }
+ }
+}

@@ -18,7 +18,7 @@ def classe(ligne):
     if c < SEUIL_NORMAL_PCT:
         return "NORMAL"
     if c >= SEUIL_ALERTE_PCT:
-        return "ALERTE"
+        return "INONDATION"
     return "GRIS"
 
 

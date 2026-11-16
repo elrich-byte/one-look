@@ -82,11 +82,11 @@ Apprentissage sur CPU : augmentation par retournements et rotations, poids de cl
 
 | Modèle | F1 macro | Inondation P / R | Feu P / R | Fausses alertes | Taille | ms / tuile |
 |---|---|---|---|---|---|---|
-| Petit CNN — RGB | 0,31 | 67 % / 17 % | 0 % / 0 % | 12 % | 0,2 Mo | 3,3 |
-| MobileNetV3 — RGB | 0,46 | 50 % / 20 % | 40 % / 50 % | 20 % | 6,1 Mo (1,9 en INT8) | 1,3 |
-| YOLOv8n — RGB | 0,54 | 64 % / 46 % | 40 % / 50 % | 29 % | 12,6 Mo (32 bits) | 40 |
-| CLIP sans entraînement — RGB | 0,48 | 61 % / 57 % | 20 % / 75 % | 51 % | 605 Mo | 148 (multi-cœurs) |
-| **Petit CNN — complet** | **0,61** | **95 % / 60 %** | 33 % / 25 % | **5 %** | **0,2 Mo** | **4,8** |
+| Petit CNN (RGB) | 0,31 | 67 % / 17 % | 0 % / 0 % | 12 % | 0,2 Mo | 3,3 |
+| MobileNetV3 (RGB) | 0,46 | 50 % / 20 % | 40 % / 50 % | 20 % | 6,1 Mo (1,9 en INT8) | 1,3 |
+| YOLOv8n (RGB) | 0,54 | 64 % / 46 % | 40 % / 50 % | 29 % | 12,6 Mo (32 bits) | 40 |
+| CLIP sans entraînement (RGB) | 0,48 | 61 % / 57 % | 20 % / 75 % | 51 % | 605 Mo | 148 (multi-cœurs) |
+| **Petit CNN (13 bandes + radar)** | **0,61** | **95 % / 60 %** | 33 % / 25 % | **5 %** | **0,2 Mo** | **4,8** |
 
 P = précision, R = rappel. Test : 35 inondations, 4 feux, 41 normales. Temps : ONNX Runtime, un seul cœur CPU. Tailles en INT8 pour les petits CNN.
 
@@ -99,7 +99,7 @@ P = précision, R = rappel. Test : 35 inondations, 4 feux, 41 normales. Temps : 
 |---|---|---|---|
 | Radar + optique | 0,61 | 95 % / 60 % | 5 % |
 | Optique seule | 0,59 | 100 % / 37 % | 2 % |
-| Radar seul | 0,23 | — / 0 % | 0 % |
+| Radar seul | 0,23 | aucune alerte / 0 % | 0 % |
 
 En radar seul, le modèle n'est jamais assez sûr pour alerter. Les 0 % de fausses alertes sur les 814 tuiles d'eau permanente (contre 54 % sans seuil) ne démontrent donc rien sur sa qualité : un modèle dédié au radar, avec son propre seuil, serait nécessaire.
 

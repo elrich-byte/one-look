@@ -67,7 +67,7 @@ def main():
     for classe, n in [("INONDATION", 4), ("FEU", 3), ("NORMAL", 4), ("INCONNU", 2)]:
         l = index[(index["classe"] == classe) & index["ensemble"].isin(["test", "inconnu"]) & (index["s2"] != "")]
         choix += list(l.sample(min(n, len(l)), random_state=1).itertuples(index=False))
-    images = [vers_tableau(image_titre("One Look", "Une image, un regard, une décision — à bord du satellite"))] * 3
+    images = [vers_tableau(image_titre("One Look", "Une image, un regard, une décision. À bord du satellite."))] * 3
     for ligne in choix:
         ligne = ligne._asdict()
         s2 = lire(DATA / ligne["s2"]); s1 = lire(DATA / ligne["s1"]) if ligne["s1"] else None

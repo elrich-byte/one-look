@@ -17,18 +17,18 @@ import matplotlib  # noqa: E402
 matplotlib.use("Agg")
 import matplotlib.pyplot as plt  # noqa: E402
 
-NOMS = {"cnn_rgb": "Petit CNN — RGB", "mobilenet_rgb": "MobileNetV3 pré-entraîné — RGB",
-        "yolo_rgb": "YOLOv8n (rectangles) — RGB", "clip_zero_shot": "CLIP sans entraînement — RGB",
-        "cnn_complet": "Petit CNN — complet (13 bandes + radar)"}
+NOMS = {"cnn_rgb": "Petit CNN (RGB)", "mobilenet_rgb": "MobileNetV3 pré-entraîné (RGB)",
+        "yolo_rgb": "YOLOv8n, rectangles (RGB)", "clip_zero_shot": "CLIP sans entraînement (RGB)",
+        "cnn_complet": "Petit CNN (13 bandes + radar)"}
 ORDRE = ["cnn_rgb", "mobilenet_rgb", "yolo_rgb", "clip_zero_shot", "cnn_complet"]
 
 
 def pct(v):
-    return "—" if v is None else f"{100 * v:.0f} %"
+    return "n.d." if v is None else f"{100 * v:.0f} %"
 
 
 def f2(v):
-    return "—" if v is None else f"{v:.2f}"
+    return "n.d." if v is None else f"{v:.2f}"
 
 
 def main():
@@ -45,7 +45,7 @@ def main():
         inc = r[m].get("inconnu", {}).get("auroc_test")
         lignes.append(f"| {NOMS[m]} | {f2(t['f1_macro'])} | {pct(t['INONDATION']['precision'])} / {pct(t['INONDATION']['rappel'])} "
                       f"| {pct(t['FEU']['precision'])} / {pct(t['FEU']['rappel'])} | {pct(t['fausses_alertes'])} "
-                      f"| {f2(inc)} | {taille} | {ms if ms is not None else '—'} |")
+                      f"| {f2(inc)} | {taille} | {ms if ms is not None else 'n.d.'} |")
     texte = ["# Tableau comparatif (test : pays jamais vus)", "",
              "Test : 35 inondations (Bolivie, Sri Lanka, Somalie), 4 feux (Grèce, Sardaigne, Australie ×2), "
              "41 tuiles normales. P = précision, R = rappel. Fausses alertes = part des tuiles normales "
@@ -60,7 +60,7 @@ def main():
 
     # Figure : F1 et fausses alertes par modèle
     fig, ax = plt.subplots(1, 2, figsize=(13, 4.6))
-    noms = [NOMS[m].replace(" — ", "\n") for m in modeles]
+    noms = [NOMS[m].replace(" (", "\n(") for m in modeles]
     couleurs = ["#c98a2e" if "complet" in m else "#2f6db3" for m in modeles]
     ax[0].barh(noms, [r[m]["test"]["f1_macro"] for m in modeles], color=couleurs)
     ax[0].set(title="F1 macro (plus haut = mieux)", xlim=(0, 1))
@@ -80,7 +80,7 @@ def main():
             for j in range(3):
                 a.text(j, i, c[i, j], ha="center", va="center", color="white" if c[i, j] > c.max() / 2 else "black")
         a.set_xticks(range(3), ["Normal", "Inond.", "Feu"]); a.set_yticks(range(3), ["Normal", "Inond.", "Feu"])
-        a.set_title(NOMS[m].replace(" — ", "\n"), fontsize=9); a.set_xlabel("prédit"); a.set_ylabel("vrai")
+        a.set_title(NOMS[m].replace(" (", "\n("), fontsize=9); a.set_xlabel("prédit"); a.set_ylabel("vrai")
     fig.tight_layout(); fig.savefig(DOCS / "figures" / "confusions.png", dpi=110)
 
 
